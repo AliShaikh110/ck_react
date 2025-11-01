@@ -6,7 +6,7 @@ function App() {
   return (
     <>
       Hello workld
-      {/* <MainEditor /> */}
+      <MainEditor />
       <MainKatex />
     </>
   )
