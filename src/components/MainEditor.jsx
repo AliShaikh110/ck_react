@@ -8,6 +8,9 @@ import {
     Bold,
     Italic,
     GeneralHtmlSupport,
+    List,
+    ListUI,
+    ListProperties,
 } from 'ckeditor5';
 
 import EquationPlugin from './EquationPlugin';
@@ -76,6 +79,7 @@ function MainEditor() {
         <>
             <CKEditor
                 editor={ClassicEditor}
+                className="my-editor"
                 config={{
                     // Your license key here
                     licenseKey:
@@ -85,6 +89,9 @@ function MainEditor() {
                         Paragraph,
                         Bold,
                         Italic,
+                        List,
+                        ListUI,
+                        ListProperties,
                         EquationPlugin,
                         GeneralHtmlSupport,
                         KaTeXRenderPlugin,
@@ -94,10 +101,20 @@ function MainEditor() {
                         'redo',
                         '|',
                         'bold',
+                        '|',
                         'italic',
+                        'bulletedList',
+                        'numberedList',
                         '|',
                         'insertEquation',
                     ],
+                    list: {
+                        properties: {
+                            styles: true,
+                            startIndex: true,
+                            reversed: true,
+                        },
+                    },
                     htmlSupport: {
                         allow: [
                             {

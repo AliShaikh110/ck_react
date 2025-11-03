@@ -67,13 +67,13 @@ function EqEditorModal({
         style={{
           background: '#fff',
           padding: 20,
-          width: '720px',
+          width: '780px',
           maxHeight: '80vh',
           overflowY: 'auto',
           borderRadius: 8,
         }}
       >
-        <h3 style={{ marginTop: 0 }}>
+        <h3 style={{ marginTop: 0, marginBlockEnd: 8 }}>
           {isEditing ? 'Edit Equation' : 'Insert Equation'}
         </h3>
 
@@ -112,7 +112,7 @@ function EqEditorModal({
               onChange={(e) => setDisplayMode(e.target.checked)}
               style={{ marginRight: 8 }}
             />
-            Display mode (block)
+            Display block
           </label>
         </div>
 
