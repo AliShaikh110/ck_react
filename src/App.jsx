@@ -5,7 +5,7 @@ function App() {
 
   return (
     <>
-      <h2 style={{ paddingBlock: '20px' }}>
+      <h2 style={{ paddingBlockEnd: '10px' }}>
         Ck Editor
       </h2>
       <MainEditor />
