@@ -10,7 +10,6 @@ import {
     GeneralHtmlSupport,
 } from 'ckeditor5';
 
-import { TimestampPlugin } from './TimeStampClass';
 import EquationPlugin from './EquationPlugin';
 import KaTeXRenderPlugin from './KaTeXRenderPlugin';
 import EqEditorModal from './EqEditorModal';
@@ -86,7 +85,6 @@ function MainEditor() {
                         Paragraph,
                         Bold,
                         Italic,
-                        TimestampPlugin,
                         EquationPlugin,
                         GeneralHtmlSupport,
                         KaTeXRenderPlugin,
@@ -98,9 +96,7 @@ function MainEditor() {
                         'bold',
                         'italic',
                         '|',
-                        'timestamp',
-                        'insertInlineEquation',
-                        'insertBlockEquation',
+                        'insertEquation',
                     ],
                     htmlSupport: {
                         allow: [
