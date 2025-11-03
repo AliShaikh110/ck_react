@@ -1,17 +1,24 @@
-// EqEditorModal.jsx
-import React, { useEffect, useRef } from 'react';
+// src/EqEditorModal.jsx
+import React, { useEffect, useRef, useState } from 'react';
 
-function EqEditorModal({ isOpen, onClose, onInsert, initialLatex = '', isEditing = false }) {
+function EqEditorModal({
+  isOpen,
+  onClose,
+  onInsert,
+  initialLatex = '',
+  isEditing = false,
+  displayMode: initialDisplayMode = false, // false=inline, true=block
+}) {
   const textareaRef = useRef(null);
   const outputRef = useRef(null);
   const toolbarRef = useRef(null);
+  const [displayMode, setDisplayMode] = useState(initialDisplayMode);
 
   useEffect(() => {
     if (!isOpen || !window.EqEditor) return;
 
-    // 1) Initialize once per open
     const textarea = window.EqEditor.TextArea.link('latexInput');
-    const output = window.EqEditor.Output.link('output', 'url'); // or omit 'url' to use default
+    const output = window.EqEditor.Output.link('output', 'url');
     const toolbar = window.EqEditor.Toolbar.link('toolbar');
 
     textarea.addOutput(output).addHistoryMenu(new window.EqEditor.History('history'));
@@ -21,32 +28,26 @@ function EqEditorModal({ isOpen, onClose, onInsert, initialLatex = '', isEditing
     outputRef.current = output;
     toolbarRef.current = toolbar;
 
-    // 2) If editing, load the LaTeX via API that exists: clear + insert
     if (initialLatex) {
-      textarea.clear();                  // wipe CC spans safely
-      textarea.insert(initialLatex);     // put raw LaTeX; EqEditor builds its structured DOM
-      // Either of these will refresh the preview:
-      // textarea.notifyOutputs();
+      textarea.clear();
+      textarea.insert(initialLatex);
       output.updateOutput();
     }
 
-    // Cleanup when modal unmounts/closes (optional)
+    setDisplayMode(initialDisplayMode);
+
     return () => {
-      // If you dynamically add/remove, you could also call textarea.close()
-      // to clean extra DOM created by EqEditor.
-      // textareaRef.current?.close?.();
       textareaRef.current = null;
       outputRef.current = null;
       toolbarRef.current = null;
     };
-  }, [isOpen, initialLatex]);
+  }, [isOpen, initialLatex, initialDisplayMode]);
 
   if (!isOpen) return null;
 
   const handleInsert = () => {
-    const latex =
-      textareaRef.current?.getTextArea()?.textContent?.trim() || ''; // <- supported way to read LaTeX
-    if (latex) onInsert(latex);
+    const latex = textareaRef.current?.getTextArea()?.textContent?.trim() || '';
+    if (latex) onInsert(latex, displayMode);
     onClose();
   };
 
@@ -59,20 +60,23 @@ function EqEditorModal({ isOpen, onClose, onInsert, initialLatex = '', isEditing
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        zIndex: 9999
+        zIndex: 9999,
       }}
     >
       <div
         style={{
           background: '#fff',
           padding: 20,
-          width: 600,
+          width: '720px',
           maxHeight: '80vh',
           overflowY: 'auto',
-          borderRadius: 8
+          borderRadius: 8,
         }}
       >
-        <h3 style={{ marginTop: 0 }}>{isEditing ? 'Edit Equation' : 'Insert Equation'}</h3>
+        <h3 style={{ marginTop: 0 }}>
+          {isEditing ? 'Edit Equation' : 'Insert Equation'}
+        </h3>
+
         <div id="equation-editor">
           <div id="history"></div>
           <div id="toolbar"></div>
@@ -87,7 +91,7 @@ function EqEditorModal({ isOpen, onClose, onInsert, initialLatex = '', isEditing
               backgroundColor: '#f9f9f9',
               whiteSpace: 'pre-wrap',
               overflow: 'auto',
-              resize: 'vertical'
+              resize: 'vertical',
             }}
             placeholder="Write Equation here..."
             spellCheck={false}
@@ -97,6 +101,19 @@ function EqEditorModal({ isOpen, onClose, onInsert, initialLatex = '', isEditing
           <div id="equation-output" style={{ marginTop: 10 }}>
             <img id="output" alt="Equation output" />
           </div>
+        </div>
+
+        {/* Mode toggle */}
+        <div style={{ marginTop: 15 }}>
+          <label style={{ userSelect: 'none', cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={displayMode}
+              onChange={(e) => setDisplayMode(e.target.checked)}
+              style={{ marginRight: 8 }}
+            />
+            Display mode (block)
+          </label>
         </div>
 
         <div style={{ marginTop: 20 }}>
@@ -109,7 +126,7 @@ function EqEditorModal({ isOpen, onClose, onInsert, initialLatex = '', isEditing
               color: 'white',
               border: 'none',
               borderRadius: 4,
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
           >
             {isEditing ? 'Update' : 'Insert'}
@@ -122,7 +139,7 @@ function EqEditorModal({ isOpen, onClose, onInsert, initialLatex = '', isEditing
               color: 'white',
               border: 'none',
               borderRadius: 4,
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
           >
             Cancel

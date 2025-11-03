@@ -83,3 +83,9 @@ button:focus-visible {
   margin: 12px 0;
   text-align: center;
 }
+
+.math-inline {
+  display: inline-block;
+  margin: 0 2px;
+  vertical-align: middle;
+}
