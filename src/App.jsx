@@ -1,17 +1,34 @@
-import MainEditor from "./components/MainEditor"
-// import MainKatex from "./katexComponentss/MainKatex"
+import React, { useState, useCallback } from "react";
+import MainEditor from "./components/MainEditor";
 
 function App() {
 
+  // Example initial HTML for editor
+  const [initialHTML] = useState("<p>Start typing or insert equations here...</p>");
+
+  // Capture content changes from MainEditor (debounced 500ms)
+  const handleEditorChange = useCallback((html, { docId }) => {
+    console.log("✅ Document updated:", docId);
+    console.log("📝 Current HTML:", html);
+  }, []);
+
   return (
     <>
-      <h2 style={{ paddingBlockEnd: '10px' }}>
-        Ck Editor
-      </h2>
-      <MainEditor />
-      {/* <MainKatex /> */}
+      <h2 style={{ paddingBlockEnd: "10px" }}>CKEditor – Semi-Controlled Mode</h2>
+
+      {/* Pass the required props */}
+      <MainEditor
+        docId={"doc-001"}
+        initialHTML={initialHTML}
+        onChange={handleEditorChange}
+      />
+      <MainEditor
+        docId={"doc-002"}
+        initialHTML={initialHTML}
+        onChange={handleEditorChange}
+      />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
