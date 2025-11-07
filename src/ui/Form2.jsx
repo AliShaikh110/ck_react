@@ -5,8 +5,13 @@ import SelectComponent from './SelectComponent';
 import { Box, Button, Container, Grid } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import CheckBox from './CheckBox';
+import { useParams } from 'react-router-dom';
 
 export default function QuestionPreview2() {
+    const { id } = useParams();
+
+    console.log('id: ', id);
+
     const [isLoading, setIsLoading] = useState(false);
 
     const { control, setValue, watch, handleSubmit, reset } = useForm({
@@ -40,7 +45,7 @@ export default function QuestionPreview2() {
         //     data: data
         // };
         // console.log('payload: ', payload);
-        const response = fetch('https://admin.onlyeducation.co.in/api/t-questions/245', {
+        const response = fetch(`https://admin.onlyeducation.co.in/api/t-questions/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -55,7 +60,7 @@ export default function QuestionPreview2() {
         const fetchData = async () => {
             try {
                 setIsLoading(true);
-                const response = await fetch('https://admin.onlyeducation.co.in/api/t-questions/245?populate[options]=true');
+                const response = await fetch(`https://admin.onlyeducation.co.in/api/t-questions/${id}?populate[options]=true`);
                 const { data } = await response.json();
                 console.log('data: ', data);
 
@@ -71,9 +76,10 @@ export default function QuestionPreview2() {
     }, []);
 
     if (isLoading) return <div>Loading...</div>;
+    // if (!id) return null;
 
     return (
-        <Container maxWidth='xl' >
+        <Container maxWidth='xl' sx={{ marginBlockStart: 6 }}>
             <Box component={'form'} onSubmit={handleSubmit(onSubmitt)}>
                 <div className='flex flex-col gap-4 py-12'>
                     <div>

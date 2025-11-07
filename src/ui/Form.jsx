@@ -32,13 +32,13 @@ export default function QuestionPreview() {
         setValue(docId, html);
     }, []);
 
-    const onSubmitt = (data) => {
+    const onSubmitt = async (data) => {
         console.log('submit', data);
         // const payload = {
         //     data: data
         // };
         // console.log('payload: ', payload);
-        const response = fetch('https://admin.onlyeducation.co.in/api/t-questions', {
+        const response = await fetch('https://admin.onlyeducation.co.in/api/t-questions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -46,12 +46,13 @@ export default function QuestionPreview() {
             },
             body: JSON.stringify({ data: data }),
         })
-        console.log('response', response);
+        const datas = await response.json();
+        console.log('response', datas);
     }
 
     return (
-        <Container maxWidth='xl' >
-            <Box component={'form'} onSubmit={handleSubmit(onSubmitt)}>
+        <Container maxWidth='xl' sx={{ marginBlockStart: 6 }}>
+            <Box component={'form'} onSubmit={handleSubmit(onSubmitt)} sx={{ paddingBlockEnd: 6 }}>
                 <div className='flex flex-col gap-4 py-12'>
                     <div>
                         <h1 className='text-xl'>{`1) Question title`}</h1>
