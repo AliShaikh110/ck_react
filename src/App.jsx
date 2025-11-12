@@ -61,7 +61,7 @@ function App() {
       </nav> */}
 
       <Routes>
-        <Route path="/:id" element={<Index />} />
+        <Route path="/" element={<Index />} />
         <Route path="/q" element={<QuestionPreview />} />
         <Route path="/edit/:id" element={<QuestionPreview2 />} />
         <Route path="/listing" element={<GetAllList />} />
