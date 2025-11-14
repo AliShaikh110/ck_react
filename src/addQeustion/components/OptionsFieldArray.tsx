@@ -9,12 +9,18 @@ import {
 import { Box, Grid, Button, Checkbox, FormControlLabel } from "@mui/material";
 import MainEditor from "./MainEditor";
 import SimpleSelectField from "../../GlobalComponent/SimpleSelectField";
-import { optionLabelOptions } from "../Index";
 interface OptionFieldArrayProps<T extends FieldValues> {
   control: Control<T>;
   setValue: UseFormSetValue<T>;
   watch: UseFormWatch<T>;
 }
+
+const optionLabelOptions = [
+  { label: "A", value: "A" },
+  { label: "B", value: "B" },
+  { label: "C", value: "C" },
+  { label: "D", value: "D" },
+];
 
 const OptionsFieldArray = <T extends FieldValues>({
   control,
