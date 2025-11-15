@@ -28,9 +28,15 @@ export default function Index() {
       test_series_exams: [],
       marks: 0,
       difficulty: "easy",
+      hint: "",
+      option_type: "",
       explanation: "",
-      option_type: "input_box",
-      options: [{ option_label: "A", option: "", is_correct: false }],
+      options: [
+        { option_label: "A", option: "", is_correct: false },
+        { option_label: "B", option: "", is_correct: false },
+        { option_label: "C", option: "", is_correct: false },
+        { option_label: "B", option: "", is_correct: false },
+      ],
     },
     // resolver: zodResolver(QuestionSchema),
   });

@@ -24,3 +24,9 @@ export const difficultyOptions = [
     { label: "Medium", value: "medium" },
     { label: "Hard", value: "hard" },
 ];
+
+export const optionTypeData = [
+    { label: "Single Select", value: "single_select" },
+    { label: "Multi Select", value: "multi_select" },
+    // { label: "Single Select", value: "single_select" },
+];

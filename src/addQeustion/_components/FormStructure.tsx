@@ -5,8 +5,7 @@ import { QuestionSchemaType } from '../QuestionSchema'
 import SimpleTextField from '../../GlobalComponent/SimpleTextField'
 import MainEditor from '../components/MainEditor'
 import OptionsFieldArray from '../components/OptionsFieldArray'
-import { difficultyOptions, dummySubject, dummyTopics } from './data'
-import { useContext } from 'react'
+import { difficultyOptions, dummySubject, dummyTopics, optionTypeData } from './data'
 import useInitialDataContext from './InitalContext'
 
 export default function FormStructure({
@@ -18,19 +17,20 @@ export default function FormStructure({
     watch: UseFormWatch<QuestionSchemaType>;
     setValue: UseFormSetValue<QuestionSchemaType>
 }) {
-    const { fields, append, remove } = useFieldArray({
-        control,
-        name: "options",
-    });
     const { subjectTagData, topicTagData } = useInitialDataContext();
 
     return (
         <Grid
             container
             spacing={3}
-            sx={{ marginBlockStart: 10, paddingInline: 3 }}
+            sx={{ marginBlockStart: 10, paddingInline: 3, paddingBlockEnd: 5 }}
         >
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid container size={12}>
+                <Typography variant="h4">
+                    Question Form
+                </Typography>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                 <Typography variant="subtitle1">
                     Select subject
                 </Typography>
@@ -47,10 +47,10 @@ export default function FormStructure({
                     rules={{ required: "Please select a subject" }}
                 />
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                 {/* <SimpleSelectField /> */}
                 <Typography variant="subtitle1">
-                    Test series topic
+                    Select topic
                 </Typography>
                 <SimpleSelectField
                     name="test_series_topic"
@@ -65,7 +65,25 @@ export default function FormStructure({
                     rules={{ required: "Please select a Topic" }}
                 />
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                {/* <SimpleSelectField /> */}
+                <Typography variant="subtitle1">
+                    Select Exams
+                </Typography>
+                <SimpleSelectField
+                    name="test_series_exams"
+                    control={control}
+                    // label="Test Series Topic"
+                    options={
+                        topicTagData?.map((topic) => ({
+                            value: topic.id,
+                            label: topic.attributes.name,
+                        })) as Option[]
+                    }
+                    rules={{ required: "Please select a Topic" }}
+                />
+            </Grid>
+            <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                 {/* <SimpleSelectField /> */}
                 <Typography variant="subtitle1">
                     Marks
@@ -79,7 +97,7 @@ export default function FormStructure({
                     rules={{ min: { value: 1, message: "Marks must be at least 1" } }}
                 />
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                 {/* <SimpleSelectField /> */}
                 <Typography variant="subtitle1">
                     Difficulty
@@ -92,27 +110,56 @@ export default function FormStructure({
                     rules={{ required: "Please select a Topic" }}
                 />
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                {/* <SimpleSelectField /> */}
                 <Typography variant="subtitle1">
-                    Question Title
+                    Option type
                 </Typography>
-                <MainEditor
-                    name="question_title"
-                    value={watch("question_title")}
-                    setValue={setValue}
-                    watch={watch}
+                <SimpleSelectField
+                    name="option_type"
+                    control={control}
+                    // label="Test Series Topic"
+                    options={optionTypeData}
+                    rules={{ required: "Please select a Topic" }}
+                    noneOption={false}
                 />
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                {/* <SimpleSelectField /> */}
                 <Typography variant="subtitle1">
-                    Explaination
+                    Hint
                 </Typography>
-                <MainEditor
-                    name="explanation"
-                    value={watch("explanation")}
-                    setValue={setValue}
-                    watch={watch}
+                <SimpleTextField
+                    name="hint"
+                    control={control}
+                    // label="Test Series Topic"
+                    // options={difficultyOptions}
+                    rules={{ required: "Please select a Topic" }}
                 />
+            </Grid>
+            <Grid container size={12}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                    <Typography variant="subtitle1">
+                        Question Title
+                    </Typography>
+                    <MainEditor
+                        name="question_title"
+                        value={watch("question_title")}
+                        setValue={setValue}
+                        watch={watch}
+                    />
+                </Grid>
+                <Grid size={{ xs: 12, md: 6 }}>
+                    <Typography variant="subtitle1">
+                        Explaination
+                    </Typography>
+                    <MainEditor
+                        name="explanation"
+                        value={watch("explanation")}
+                        setValue={setValue}
+                        watch={watch}
+                    />
+                </Grid>
             </Grid>
             <Grid size={12}>
                 <OptionsFieldArray
@@ -121,9 +168,11 @@ export default function FormStructure({
                     setValue={setValue}
                 />
             </Grid>
-            <Button variant="contained" type="submit">
-                Submit
-            </Button>
+            <Grid size={12} sx={{ textAlign: 'center', paddingBlock: 2 }}>
+                <Button variant="contained" type="submit" sx={{ paddingInline: 10 }}>
+                    Submit
+                </Button>
+            </Grid>
         </Grid>
     )
 }

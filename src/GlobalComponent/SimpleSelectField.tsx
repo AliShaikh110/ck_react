@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Controller,
   Control,
@@ -29,6 +28,7 @@ interface SimpleSelectFieldProps<T extends FieldValues> {
   fullWidth?: boolean;
   rules?: RegisterOptions; // ✅ support validation rules
   isOptionEqualToValue?: (a: Option, b: Option) => boolean; // ✅ optional prop
+  noneOption?: boolean
 }
 
 const SimpleSelectField = <T extends FieldValues>({
@@ -40,6 +40,7 @@ const SimpleSelectField = <T extends FieldValues>({
   disabled = false,
   fullWidth = true,
   rules,
+  noneOption = true,
 }: SimpleSelectFieldProps<T>) => {
   return (
     <Controller
@@ -52,12 +53,18 @@ const SimpleSelectField = <T extends FieldValues>({
           <Select
             {...field}
             label={label}
-            value={field.value ? field.value : ""}
-            onChange={(e) => field.onChange(Number(e.target.value))}
+            value={typeof field.value === "number" ? (field.value ? field.value : '') : field.value}
+            onChange={(e) => {
+              if (typeof e.target.value === 'number') {
+                field.onChange(Number(e.target.value));
+              } else {
+                field.onChange(e.target.value);
+              }
+            }}
           >
-            <MenuItem value={0}>
+            {noneOption && (<MenuItem value={0}>
               <i>none</i>
-            </MenuItem>
+            </MenuItem>)}
 
             {options?.map((opt) => (
               <MenuItem key={opt.value} value={opt.value}>
@@ -69,7 +76,7 @@ const SimpleSelectField = <T extends FieldValues>({
           {fieldState.error && (
             <FormHelperText>{fieldState.error.message}</FormHelperText>
           )}
-        </FormControl>
+        </FormControl >
       )}
     />
   );
