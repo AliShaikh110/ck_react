@@ -67,7 +67,7 @@ const OptionsFieldArray = <T extends FieldValues>({
 
             <FormControlLabel
               control={
-                <Checkbox
+                <Checkbox 
                   // watch returns unknown; coerce to boolean
                   checked={!!watch(`options.${index}.is_correct` as any)}
                   onChange={(e) =>

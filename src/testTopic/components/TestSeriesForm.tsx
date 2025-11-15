@@ -144,11 +144,11 @@ const TestSeriesForm = () => {
               { value: 0, label: "0" },
               { label: "1", value: 1 },
             ]}
-            isOptionEqualToValue={
-              watch("order") === 0
-                ? (a, b) => a.value === b.value
-                : (a, b) => a.value === b.value
-            }
+            // isOptionEqualToValue={
+            //   watch("order") === 0
+            //     ? (a, b) => a.value === b.value
+            //     : (a, b) => a.value === b.value
+            // }
             // placeholder="Add relation"
             rules={{ required: "Select at least one subject" }}
           />
