@@ -48,8 +48,9 @@ import QuestionPreview2 from "./ui/Form2";
 import ResponsiveAppBar from "./ui/Header";
 import DrawerAppBar from "./ui/Header1";
 import Index from "./addQeustion/Index";
-import TestTopicPage from "./testTopic/Index";
 import { InitialDataContextProvider } from "./addQeustion/_components/InitalContext";
+import TestTopicPage from "./testTopic/Index";
+import TestSubjectPage from "./testSubject/Index";
 
 function App() {
   return (
@@ -71,6 +72,7 @@ function App() {
           }
         />
         <Route path="/q" element={<QuestionPreview />} />
+        <Route path="/test-subject" element={<TestSubjectPage />} />
         <Route
           path="/test-topic"
           element={
