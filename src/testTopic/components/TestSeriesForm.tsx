@@ -19,7 +19,6 @@ import SimpleSelectField, {
 } from "../../GlobalComponent/SimpleSelectField";
 import SimpleTextField from "../../GlobalComponent/SimpleTextField";
 import useInitialDataContext from "../../addQeustion/_components/InitalContext";
-import GlobalSelectField from "../../GlobalComponent/GlobalSelectField";
 
 const TestSeriesForm = () => {
   const {
@@ -82,25 +81,10 @@ const TestSeriesForm = () => {
             name="name"
             control={control}
             label="Test Topic Subject"
-            // options={getData?.topicTagData.map((topic) => ({
-            //   value: topic.id,
-            //   label: topic?.attributes?.name,
-            // }))}
             placeholder="Add relation"
             rules={{ required: "Select at least one subject" }}
           />
         </Grid>
-
-        {/* SLUG
-        <Grid size={{ xs: 12, md: 6 }}>
-          <SimpleTextField
-            name="slug"
-            
-            control={control}
-            label="Slug"
-            rules={{ required: "Slug is required" }}
-          />
-        </Grid> */}
 
         {/* SUBJECT RELATION (multi select) */}
         <Grid size={{ xs: 12, md: 6 }}>
@@ -119,24 +103,7 @@ const TestSeriesForm = () => {
 
         {/* ORDER */}
         <Grid size={{ xs: 12, md: 6 }}>
-          {/* <SimpleTextField
-            name="order"
-            control={control}
-            label="Order"
-            type="number"
-          /> */}
-          {/* <GlobalSelectField
-            name="test_series_subject"
-            control={control}
-            label="Test Series Subject"
-            options={getData?.subjectTagData?.map((topic) => ({
-              value: topic.id,
-              label: topic?.attributes?.name,
-            }))}
-            placeholder="Add relation"
-            rules={{ required: "Select at least one subject" }}
-          /> */}
-          <GlobalSelectField
+          <SimpleSelectField
             name="order"
             control={control}
             label="Order"
@@ -144,12 +111,7 @@ const TestSeriesForm = () => {
               { value: 0, label: "0" },
               { label: "1", value: 1 },
             ]}
-            // isOptionEqualToValue={
-            //   watch("order") === 0
-            //     ? (a, b) => a.value === b.value
-            //     : (a, b) => a.value === b.value
-            // }
-            // placeholder="Add relation"
+            noneOption={false}
             rules={{ required: "Select at least one subject" }}
           />
         </Grid>
@@ -166,18 +128,6 @@ const TestSeriesForm = () => {
             label="Is Active"
           />
         </Grid>
-
-        {/* QUESTIONS RELATION (multi select) */}
-        {/* <Grid size={{ xs: 12, md: 6 }}>
-          <SimpleSelectField
-            name="test_series_questions"
-            control={control}
-            label="Test Series Questions"
-            options={questions}
-            placeholder="Add relation"
-            rules={{ required: "Select at least one question" }}
-          />
-        </Grid> */}
 
         <Grid size={{ xs: 12 }}>
           <Button variant="contained" type="submit" fullWidth>

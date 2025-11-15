@@ -16,9 +16,10 @@ import {
   TestSchemaType,
 } from "../../validation/testSeriesSubjectSchema";
 import SimpleTextField from "../../GlobalComponent/SimpleTextField";
-import GlobalSelectField from "../../GlobalComponent/GlobalSelectField";
 import FileUpload from "../../GlobalComponent/FileUpload";
-import { Option } from "../../GlobalComponent/SimpleSelectField";
+import SimpleSelectField, {
+  Option,
+} from "../../GlobalComponent/SimpleSelectField";
 
 const iconOptions: Option[] = [
   { value: "math", label: "Math Icon" },
@@ -65,31 +66,15 @@ const TestSubjectForm = () => {
               name="name"
               control={control}
               label="name"
-              rules={{ required: "Name is required" }} 
+              rules={{ required: "Name is required" }}
               fullWidth
             />
           </Grid>
 
-          {/* SLUG */}
-          {/* <Grid size={{ xs: 12, md: 6 }}>
-            <SimpleTextField
-              name="slug"
-              control={control}
-              label="slug"
-              fullWidth
-            />
-          </Grid> */}
 
           {/* ORDER */}
           <Grid size={{ xs: 12, md: 6 }}>
-            {/* <SimpleTextField
-              name="order"
-              control={control}
-              type="number"
-              label="order"
-              fullWidth
-            /> */}
-            <GlobalSelectField
+            <SimpleSelectField
               name="order"
               control={control}
               label="Order"
@@ -97,24 +82,18 @@ const TestSubjectForm = () => {
                 { value: 0, label: "0" },
                 { label: "1", value: 1 },
               ]}
-              isOptionEqualToValue={
-                watch("order") === 0
-                  ? (a, b) => a.value === b.value
-                  : (a, b) => a.value === b.value
-              }
+              // isOptionEqualToValue={
+              //   watch("order") === 0
+              //     ? (a, b) => a.value === b.value
+              //     : (a, b) => a.value === b.value
+              // }
+              noneOption={false}
               // placeholder="Add relation"
               rules={{ required: "Select at least one subject" }}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            {/* <SimpleTextField
-              name="order"
-              control={control}
-              type="number"
-              label="order"
-              fullWidth
-            /> */}
-            <GlobalSelectField
+            <SimpleSelectField
               name="testSeriesExams"
               control={control}
               label="test Series Exams"
@@ -122,28 +101,10 @@ const TestSubjectForm = () => {
                 { value: 0, label: "0" },
                 { label: "1", value: 1 },
               ]}
-              isOptionEqualToValue={
-                watch("testSeriesExams") === 0
-                  ? (a, b) => a.value === b.value
-                  : (a, b) => a.value === b.value
-              }
-              // placeholder="Add relation"
+              noneOption={false}
               rules={{ required: "Select at least one subject" }}
             />
           </Grid>
-
-          {/* ICON (select) */}
-          {/* <Grid size={{ xs: 12, md: 6 }}> */}
-          {/* <GlobalSelectField
-              name="icon"
-              control={control}
-              label="icon"
-              placeholder="Choose here"
-              options={iconOptions}
-              fullWidth
-            /> */}
-          {/* <FileUpload name="icon" control={control} label="icon" />
-          </Grid> */}
 
           {/* isActive (toggle) */}
           <Grid size={{ xs: 12, md: 6 }}>
@@ -156,18 +117,6 @@ const TestSubjectForm = () => {
               }
               label="Is Active"
             />
-            {/* <Typography mb={1}>isActive</Typography>
-
-            <ToggleButtonGroup
-              value={isActive}
-              exclusive
-              onChange={(e, val) => {
-                if (val !== null) setValue("isActive", val);
-              }}
-            >
-              <ToggleButton value={false}>FALSE</ToggleButton>
-              <ToggleButton value={true}>TRUE</ToggleButton>
-            </ToggleButtonGroup> */}
           </Grid>
 
           {/* SUBMIT BUTTON */}
