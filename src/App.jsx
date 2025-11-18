@@ -38,6 +38,14 @@ function App() {
           }
         />
         <Route
+          path="/test-topic/:id"
+          element={
+            <InitialDataContextProvider>
+              <TestTopicPage />
+            </InitialDataContextProvider>
+          }
+        />
+        <Route
           path="/edit/:id"
           element={
             <InitialDataContextProvider>

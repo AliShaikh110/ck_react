@@ -54,7 +54,7 @@ const SimpleSelectField = <T extends FieldValues>({
             {...field}
             label={label}
             size="small"
-            value={typeof field.value === "number" ? (field.value ? field.value : '') : field.value}
+            value={typeof field.value === "number" ? (field.value ? field.value : noneOption ? "" : 0) : field.value}
             slotProps={{
               root: {
                 style: {

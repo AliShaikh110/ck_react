@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -14,11 +14,10 @@ import {
   TestSeriesSchema,
   TestSeriesSchemaType,
 } from "../../validation/testSeriesSchema";
-import SimpleSelectField, {
-  Option,
-} from "../../GlobalComponent/SimpleSelectField";
+import SimpleSelectField from "../../GlobalComponent/SimpleSelectField";
 import SimpleTextField from "../../GlobalComponent/SimpleTextField";
 import useInitialDataContext from "../../addQeustion/_components/InitalContext";
+import { useParams } from "react-router-dom";
 
 const TestSeriesForm = () => {
   const {
@@ -26,6 +25,7 @@ const TestSeriesForm = () => {
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm<TestSeriesSchemaType>({
     resolver: zodResolver(TestSeriesSchema),
@@ -38,29 +38,60 @@ const TestSeriesForm = () => {
     },
   });
   console.log("watch: ", watch());
+  const { id } = useParams(); // id will be string | undefined
 
   const getData = useInitialDataContext();
+  console.log('getData: ', getData.subjectTagData);
   console.log("getTopicData: ", getData?.topicTagData);
 
+  useEffect(() => {
+    if (!id) return; // no id → create mode → don't fetch data
+
+    const fetchData = async () => {
+      const res = await fetch(
+        `${import.meta.env.VITE_BASE_URL}t-topics/${id}?[fields][0]=name&[fields][1]=slug&[fields][2]=is_active&[fields][3]=order&populate[test_series_subject][fields][0]=id`,
+        {
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_STRAPI_BEARER}`,
+          },
+        }
+      );
+
+      const json = await res.json();
+      const item = json?.data?.attributes;
+      console.log("item: ", item);
+
+      // Load fetched data into form
+      reset({
+        name: item?.name ?? "",
+        order: item?.order ?? 0,
+        is_active: item?.is_active ?? true,
+        test_series_subject: item.test_series_subject?.data?.id ?? 0,
+      });
+    };
+
+    fetchData();
+  }, [id, reset]);
   const isActive = watch("is_active");
 
   const onSubmit = async (data: TestSeriesSchemaType) => {
-    console.log("FORM SUBMIT:", data);
+    const url = id
+      ? `https://admin.onlyeducation.co.in/api/t-topics/${id}` // UPDATE
+      : `https://admin.onlyeducation.co.in/api/t-topics`; // CREATE
 
-    const response = await fetch(
-      "https://admin.onlyeducation.co.in/api/t-topics",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization:
-            "Bearer 66d120408f58d56aa5aa2e264116bf90b16aec576dc6ef1f7dcabd06c4e5a149dd907ea9cf256dc2368e8b4ede420f708d7a90e4e98c58bad428ba24a91b83a077ea75dcd16df26dae318305eaa50d5b8a4ca55673e8493df1f70c244f6bfac8d964599a3f6d0874f4ed2fc186ae1689ec05b6488de5810d0133c5c461d99381",
-        },
-        body: JSON.stringify({ data: data }),
-      }
-    );
-    const datas = await response.json();
-    console.log("response", datas);
+    const method = id ? "PUT" : "POST";
+
+    const response = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${import.meta.env.VITE_STRAPI_BEARER}`,
+      },
+      body: JSON.stringify({ data }),
+    });
+
+    const result = await response.json();
+    console.log("API RESPONSE:", result);
   };
 
   return (
@@ -71,16 +102,17 @@ const TestSeriesForm = () => {
       onSubmit={handleSubmit(onSubmit)}
     >
       <Typography variant="h5" mb={3}>
-        Test Series Form
+        {id ? "Update Test Topic" : "Create Test Topic"}
       </Typography>
 
       <Grid container spacing={3}>
         {/* NAME */}
         <Grid size={{ xs: 12, md: 6 }}>
+          <Typography variant="subtitle1">Test Topic Subject</Typography>
           <SimpleTextField
             name="name"
             control={control}
-            label="Test Topic Subject"
+            // label="Test Topic Subject"
             placeholder="Add relation"
             rules={{ required: "Select at least one subject" }}
           />
@@ -88,10 +120,11 @@ const TestSeriesForm = () => {
 
         {/* SUBJECT RELATION (multi select) */}
         <Grid size={{ xs: 12, md: 6 }}>
+          <Typography variant="subtitle1">Test Series Subject</Typography>
           <SimpleSelectField
             name="test_series_subject"
             control={control}
-            label="Test Series Subject"
+            label=""
             options={getData?.subjectTagData?.map((topic) => ({
               value: topic.id,
               label: topic?.attributes?.name,
@@ -103,10 +136,11 @@ const TestSeriesForm = () => {
 
         {/* ORDER */}
         <Grid size={{ xs: 12, md: 6 }}>
+          <Typography variant="subtitle1">Order</Typography>
           <SimpleSelectField
             name="order"
             control={control}
-            label="Order"
+            label=""
             options={[
               { value: 0, label: "0" },
               { label: "1", value: 1 },
@@ -117,7 +151,15 @@ const TestSeriesForm = () => {
         </Grid>
 
         {/* IS ACTIVE */}
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid
+          size={{ xs: 12, md: 6 }}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            // justifyContent: "center",
+          }}
+        >
+          {/* <Typography variant="subtitle1">Test Topic Subject</Typography> */}
           <FormControlLabel
             control={
               <Switch

@@ -2,6 +2,8 @@
 
 interface ImportMetaEnv {
   readonly VITE_CKEDITOR: string;
+  readonly VITE_STRAPI_BEARER: string;
+  readonly VITE_BASE_URL: string;
 }
 
 interface ImportMeta {

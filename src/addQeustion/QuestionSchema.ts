@@ -6,11 +6,12 @@ export const QuestionSchema = z.object({
   difficulty: z.enum(["easy", "medium", "hard"]),
   explanation: z.string().min(5, "Explanation must be at least 5 characters"),
   option_type: z.enum(["single_select", "multi_select", "input_box"]),
-  subject_tag: z.number().min(1, "Subject tag ID is required"),
+  subject_tag: z.number().min(1, "Subject is required"),
+  hint: z.string().optional(),
   test_series_exams: z
     .array(z.number().min(1))
     .min(1, "At least one test series exam is required"),
-  test_series_topic: z.number().min(1, "Test series topic ID is required"),
+  test_series_topic: z.number().min(1, "Topic is required"),
   options: z
     .array(
       z.object({

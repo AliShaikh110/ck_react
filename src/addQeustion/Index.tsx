@@ -29,7 +29,7 @@ export default function Index() {
       marks: 0,
       difficulty: "easy",
       hint: "",
-      option_type: "",
+      option_type: "single_select",
       explanation: "",
       options: [
         { option_label: "A", option: "", is_correct: false },
@@ -38,6 +38,7 @@ export default function Index() {
         { option_label: "B", option: "", is_correct: false },
       ],
     },
+    resolver: zodResolver(QuestionSchema),
     // resolver: zodResolver(QuestionSchema),
   });
   console.log("errors: ", errors);
