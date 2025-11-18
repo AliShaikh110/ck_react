@@ -21,7 +21,7 @@ export type Option = {
 interface SimpleSelectFieldProps<T extends FieldValues> {
   name: Path<T>;
   control: Control<T>;
-  label: string;
+  label?: string;
   options: Option[];
   placeholder?: string;
   disabled?: boolean;

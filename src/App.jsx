@@ -11,6 +11,7 @@ import { InitialDataContextProvider } from "./addQeustion/_components/InitalCont
 import TestTopicPage from "./testTopic/Index";
 import TestSubjectPage from "./testSubject/Index";
 import TestExamCategoriesForm from "./TestExamCategories/components/TestExamCategoriesForm";
+import TestExamsForm from "./test-exams/TestExamsForm";
 
 function App() {
   return (
@@ -23,6 +24,14 @@ function App() {
           element={
             <InitialDataContextProvider>
               <Index />
+            </InitialDataContextProvider>
+          }
+        />
+        <Route
+          path="/test-exams"
+          element={
+            <InitialDataContextProvider>
+              <TestExamsForm />
             </InitialDataContextProvider>
           }
         />

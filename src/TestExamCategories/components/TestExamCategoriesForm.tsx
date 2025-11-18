@@ -16,7 +16,7 @@ import SimpleTextField from "../../GlobalComponent/SimpleTextField";
 import SimpleSelectField, {
   Option,
 } from "../../GlobalComponent/SimpleSelectField";
-import { TestExamSchema, TestSeriesExamType } from "../../validation/testSeriesExamSchema";
+import { TestExamSchema, TestSeriesExamType } from "../../validation/testSeriesExamCategorySchema";
 
 const iconOptions: Option[] = [
   { value: "math", label: "Math Icon" },

@@ -11,6 +11,7 @@ type genericFetchData = {
 type InitDataContextType = {
     subjectTagData: genericFetchData[];
     topicTagData: genericFetchData[];
+    examCategoryData: genericFetchData[];
 };
 
 const fetchDataFunc = async (url: string) => {
@@ -32,7 +33,8 @@ export function InitialDataContextProvider({ children }: { children: ReactNode }
         async function dummy() {
             const subjectData = await fetchDataFunc('https://admin.onlyeducation.co.in/api/test-series-subjects?[fields][0]=name&[fields][1]=slug');
             const topicData = await fetchDataFunc('https://admin.onlyeducation.co.in/api/t-topics?[fields][0]=name&[fields][1]=slug');
-            setData({ subjectTagData: subjectData.data, topicTagData: topicData.data });
+            const examCategoryData = await fetchDataFunc('https://admin.onlyeducation.co.in/api/t-categories?[fields][0]=name&[fields][1]=slug');
+            setData({ subjectTagData: subjectData.data, topicTagData: topicData.data, examCategoryData: examCategoryData.data });
 
         };
         dummy();
