@@ -33,8 +33,8 @@ const sidebarData = [
         url: '/test-topic'
     },
     {
-        label: 'Dummy',
-        url: '#'
+        label: 'Exam',
+        url: '/test-exams'
     },
 ]
 

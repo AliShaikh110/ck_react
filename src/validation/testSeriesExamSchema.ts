@@ -1,12 +1,16 @@
 import { z } from "zod";
 
-export const TestExamSchema = z.object({
-    name: z.string().min(1, "Name is required"),
+export const examsSchema = z.object({
+    title: z.string().min(1, "Title is required"),
     slug: z.string().nullable().optional(),
-    description: z.string().nullable().optional(),
-    order: z.number().nullable().optional(),
-    testSeriesExams: z.number().nullable().optional(),
-    isActive: z.boolean(),
+    description: z.string().min(1, "Title is required"),
+    test_series_category: z.number().nullable().optional(),
+    // test_series_questions: z.number().nullable().optional(),
+    marking_negative: z.number().optional(),
+    marking_positive: z.number(),
+    timer: z.number().optional(),
+    test_series_subjects: z.number().min(1, "Subject tag ID is required"),
+    difficulty: z.enum(["easy", "medium", "hard"], { error: "Select difficulty" }),
+    test_series_topics: z.number().nullable().optional(),
 });
-
-export type TestSeriesExamType = z.infer<typeof TestExamSchema>;
+export type ExamsSchemaType = z.infer<typeof examsSchema>;
