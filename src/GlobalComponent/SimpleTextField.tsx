@@ -58,6 +58,7 @@ const SimpleTextField: React.FC<SimpleTextFieldProps> = ({
               ? { inputMode: "numeric", pattern: "[0-9]*" }
               : undefined
           }
+          slot
         />
       )}
     />

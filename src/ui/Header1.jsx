@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { Container, Stack } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import InputBase from '@mui/material/InputBase';
+import Sidebar from '../GlobalComponent/Sidebar';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -85,8 +86,9 @@ function DrawerAppBar() {
                             <Typography
                                 variant="h5"
                                 noWrap
-                                component="div"
-                                sx={{ display: { xs: 'none', sm: 'block' }, fontWeight: 600 }}
+                                component={Link}
+                                to={'/'}
+                                sx={{ display: { xs: 'none', sm: 'block' }, fontWeight: 600, textDecoration: 'none', color: 'white' }}
                             >
                                 ONLY TEST
                             </Typography>
@@ -104,15 +106,7 @@ function DrawerAppBar() {
                                     </Typography>
                                 ))}
                             </Stack>
-                            <Search>
-                                <SearchIconWrapper>
-                                    <SearchIcon />
-                                </SearchIconWrapper>
-                                <StyledInputBase
-                                    placeholder="Search…"
-                                    inputProps={{ 'aria-label': 'search' }}
-                                />
-                            </Search>
+                            <Sidebar />
                         </Box>
                     </Toolbar>
                 </Container>
