@@ -18,19 +18,19 @@ import CloseIcon from '@mui/icons-material/Close';
 const sidebarData = [
     {
         label: 'Exams Category',
-        url: '/test-exams-category'
+        url: '/test-exams-category-list'
     },
     {
         label: 'Questions',
-        url: '/questions'
+        url: '/questions-list'
     },
     {
         label: 'Subject',
-        url: '/test-subject'
+        url: '/test-subject-list'
     },
     {
         label: 'Topic',
-        url: '/test-topic'
+        url: '/test-topic-list'
     },
     {
         label: 'Exam',

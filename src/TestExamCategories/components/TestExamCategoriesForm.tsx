@@ -17,6 +17,7 @@ import SimpleSelectField, {
   Option,
 } from "../../GlobalComponent/SimpleSelectField";
 import { TestExamSchema, TestSeriesExamType } from "../../validation/testSeriesExamCategorySchema";
+import { useLocation } from 'react-router-dom';
 
 const iconOptions: Option[] = [
   { value: "math", label: "Math Icon" },
@@ -42,6 +43,9 @@ const TestExamCategoriesForm = () => {
       isActive: true,
     },
   });
+
+  const location = useLocation();
+  console.log(location)
 
   const isActive = watch("isActive");
 

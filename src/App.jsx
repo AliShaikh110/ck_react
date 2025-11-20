@@ -35,27 +35,24 @@ function App() {
             </InitialDataContextProvider>
           }
         />
-        <Route path="/q" element={<QuestionPreview />} />
-        <Route
-          path="/test-subject"
-          element={
-            <InitialDataContextProvider>
-              <TestSubjectPage />
-            </InitialDataContextProvider>
-          }
-        />
-        <Route
-          path="/test-subject/:id"
-          element={
-            <InitialDataContextProvider>
-              <TestSubjectPage />
-            </InitialDataContextProvider>
-          }
-        />
-        <Route
-          path="/test-exams-category"
-          element={<TestExamCategoriesForm />}
-        />
+
+        {/* t-questions */}
+        <Route path="/questions-list" element={<GetAllList routeName="t-questions" lol="questions" />} />
+        <Route path="/questions" element={<QuestionPreview />} />
+        <Route path="/questions/edit/:qid" element={<QuestionPreview />} />
+
+        {/* t-categories */}
+        <Route path="/test-exams-category-list" element={<GetAllList routeName="t-categories" lol="test-exams-category" />} />
+        <Route path="/test-exams-category" element={<TestExamCategoriesForm />} />
+        <Route path="/test-exams-category/edit/:qid" element={<TestExamCategoriesForm />} />
+
+        {/* t-subjects */}
+        <Route path="/test-subject-list" element={<GetAllList routeName="test-series-subjects" lol="test-subject"/>} />
+        <Route path="/test-subject" element={<TestSubjectPage />} />
+        <Route path="/test-subject/edit/:qid" element={<TestSubjectPage />} />
+
+        {/* t-topic */}
+        <Route path="/test-topic-list" element={<GetAllList routeName="t-topics" lol="test-topic"/>} />
         <Route
           path="/test-topic"
           element={
@@ -65,13 +62,14 @@ function App() {
           }
         />
         <Route
-          path="/test-topic/:id"
+          path="/test-topic/edit/:qid"
           element={
             <InitialDataContextProvider>
               <TestTopicPage />
             </InitialDataContextProvider>
           }
         />
+
         <Route
           path="/edit/:id"
           element={
@@ -80,7 +78,7 @@ function App() {
             </InitialDataContextProvider>
           }
         />
-        <Route path="/listing" element={<GetAllList />} />
+        
       </Routes>
     </div>
   );
