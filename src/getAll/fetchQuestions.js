@@ -1,12 +1,14 @@
-export async function fetchQuestions(page = 1, pageSize = 10) {
-    const url = `https://admin.onlyeducation.co.in/api/t-questions?pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort=hint:ASC`;
+export async function fetchQuestions(routeName,page = 1, pageSize = 25) {
+    // const url = `https://admin.onlyeducation.co.in/api/${routeName}?pagination[page]=${page}&pagination[pageSize]=${pageSize}`;
+    const url = `http://127.0.0.1:1337/api/${routeName}?pagination[page]=${page}&pagination[pageSize]=25`;
+
 
     try {
         const response = await fetch(url, {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer 396dcb5c356426f8c3ce8303bcdc6feb5ecb1fd4aa4aaa59e42e1c7f82b6385cf4107d023cc58cfd61294adb023993a8e58e0aad8759fbf44fc020c1ac02f492c9d42d1f7dc12fc05c8144fbe80f06850c79d4b823241c83c5e153b03d1f8d0316fb9dec1a531c0df061e1f242bab549f17f715b900ba9546f6a6351fdd7dfa8'
+                'Authorization': 'Bearer 2f7516c0512eb15783926d08aed7154e4865a0e34608916afedd5d92508270476ebfd70f962abae6898358d88e052be1f464652ca88b3db8df5687a99a2080e3a6050d5da1388d9f53a084964d1fc59a8477f9f15f901ad8a9bd41f49bda3e9fd1f7ac8e4bed9cc2d829f333eb2c4e70b154904ba8a28eb616fd8ef29b8c2bf9'
             },
         });
 
@@ -15,7 +17,6 @@ export async function fetchQuestions(page = 1, pageSize = 10) {
         }
 
         const data = await response.json();
-        console.log('data: ', data);
         return data; // Strapi returns { data: [...], meta: { pagination... } }
     } catch (error) {
         console.error("Error fetching questions:", error);
