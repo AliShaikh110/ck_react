@@ -44,6 +44,16 @@ export default function TestExamFormStructure({
                     rules={{ required: "Enter title" }}
                 />
             </Grid>
+            {/* <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                <Typography variant="subtitle1">
+                    Slug
+                </Typography>
+                <SimpleTextField
+                    name="slug"
+                    control={control}
+                    rules={{ required: "Enter title" }}
+                />
+            </Grid> */}
             <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                 {/* <SimpleSelectField /> */}
                 <Typography variant="subtitle1">
@@ -82,6 +92,7 @@ export default function TestExamFormStructure({
                 <SimpleTextField
                     name="marking_negative"
                     control={control}
+                    type='number'
                     // label="Test Series Topic"
                     // options={difficultyOptions}
                     rules={{ required: "Please select a Topic" }}
@@ -95,6 +106,7 @@ export default function TestExamFormStructure({
                 <SimpleTextField
                     name="marking_positive"
                     control={control}
+                    type='number'
                     // label="Test Series Topic"
                     // options={difficultyOptions}
                     rules={{ required: "Please select a Topic" }}

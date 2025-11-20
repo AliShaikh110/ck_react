@@ -24,7 +24,7 @@ export default function TestExamsForm() {
             marking_positive: 0,
             timer: 0,
             test_series_subjects: 0,
-            difficulty: "easy",
+            difficulty: "Easy",
             test_series_topics: 0,
         },
         resolver: zodResolver(examsSchema),
@@ -37,7 +37,7 @@ export default function TestExamsForm() {
         // };
         // console.log('payload: ', payload);
         const response = await fetch(
-            "https://admin.onlyeducation.co.in/api/t-exam",
+            "https://admin.onlyeducation.co.in/api/t-exams",
             {
                 method: "POST",
                 headers: {
