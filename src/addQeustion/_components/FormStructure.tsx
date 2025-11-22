@@ -19,6 +19,7 @@ import {
   optionTypeData,
 } from "./data";
 import useInitialDataContext from "./InitalContext";
+import { useEffect, useState } from "react";
 
 export default function FormStructure({
   control,
@@ -29,8 +30,16 @@ export default function FormStructure({
   watch: UseFormWatch<QuestionSchemaType>;
   setValue: UseFormSetValue<QuestionSchemaType>;
 }) {
-  const { subjectTagData, topicTagData } = useInitialDataContext();
 
+  const {
+    data: { subjectTagData, topicTagData, tExamsData },
+    setSubject,
+  } = useInitialDataContext();
+
+  useEffect(() => {
+    setSubject(watch("subject_tag"))
+  },[watch("subject_tag")])  
+  
   return (
     <Grid
       container
@@ -71,25 +80,24 @@ export default function FormStructure({
             })) as Option[]
           }
           rules={{ required: "Please select a Topic" }}
+          disabled={watch("subject_tag") == 0 ? true : false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-        {/* <SimpleSelectField /> */}
+      {/* <Grid size={{ xs: 12, md: 6, lg: 4 }}>
         <Typography variant="subtitle1">Select Exams</Typography>
         <SimpleSelectField
           label=""
           name="test_series_exams"
           control={control}
-          // label="Test Series Topic"
           options={
-            topicTagData?.map((topic) => ({
-              value: topic.id,
-              label: topic.attributes.name,
+            tExamsData?.map((exam) => ({
+              value: exam.id,
+              label: exam.attributes.title,
             })) as Option[]
           }
           rules={{ required: "Please select a Topic" }}
         />
-      </Grid>
+      </Grid> */}
       <Grid size={{ xs: 12, md: 6, lg: 4 }}>
         {/* <SimpleSelectField /> */}
         <Typography variant="subtitle1">Marks</Typography>

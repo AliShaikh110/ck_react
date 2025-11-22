@@ -34,7 +34,7 @@ const sidebarData = [
     },
     {
         label: 'Exam',
-        url: '/test-exams'
+        url: '/exams-list'
     },
 ]
 
@@ -44,7 +44,6 @@ export default function Sidebar() {
     const toggleDrawer =
         (open: boolean) =>
             (event: React.KeyboardEvent | React.MouseEvent) => {
-                console.log('event: ', event);
                 if (
                     event.type === 'keydown' &&
                     ((event as React.KeyboardEvent).key === 'Tab' ||

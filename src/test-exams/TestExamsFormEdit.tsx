@@ -36,20 +36,17 @@ export default function TestExamsFormEdit() {
         },
         resolver: zodResolver(examsSchema),
     });
-    console.log('watch: ', watch());
 
 
     const onSubmitt = (data: ExamsSchemaType) => {
-        console.log('submit', data);
         const response = fetch(`https://admin.onlyeducation.co.in/api/t-questions/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer 396dcb5c356426f8c3ce8303bcdc6feb5ecb1fd4aa4aaa59e42e1c7f82b6385cf4107d023cc58cfd61294adb023993a8e58e0aad8759fbf44fc020c1ac02f492c9d42d1f7dc12fc05c8144fbe80f06850c79d4b823241c83c5e153b03d1f8d0316fb9dec1a531c0df061e1f242bab549f17f715b900ba9546f6a6351fdd7dfa8'
+                'Authorization': `Bearer ${import.meta.env.VITE_STRAPI_BEARER}`
             },
             body: JSON.stringify({ data: data }),
         })
-        console.log('response', response);
     }
 
     useEffect(() => {
@@ -60,12 +57,10 @@ export default function TestExamsFormEdit() {
                     headers: {
                         'Content-Type': 'application/json',
 
-                        'Authorization': `Bearer 396dcb5c356426f8c3ce8303bcdc6feb5ecb1fd4aa4aaa59e42e1c7f82b6385cf4107d023cc58cfd61294adb023993a8e58e0aad8759fbf44fc020c1ac02f492c9d42d1f7dc12fc05c8144fbe80f06850c79d4b823241c83c5e153b03d1f8d0316fb9dec1a531c0df061e1f242bab549f17f715b900ba9546f6a6351fdd7dfa8`
+                        'Authorization': `Bearer ${import.meta.env.VITE_STRAPI_BEARER}`
                     }
                 });
-                // console.log('response: ', await response.json());
                 const { data } = await response.json();
-                console.log('data12: ', data);
 
                 reset({
                     title: data.attributes.title,
