@@ -67,7 +67,7 @@ export default function GetAllList({ routeName, lol }) {
                         {questions.length} total
                     </Typography>
                     <Button variant="contained" >
-                        <Link to="/test-exams-category">
+                        <Link to={`/${lol}`}>
                         
                         Add New Questions
                         </Link>

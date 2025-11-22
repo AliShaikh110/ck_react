@@ -63,7 +63,11 @@ const SimpleMultiAutoComplete = <T extends FieldValues>({
             disableCloseOnSelect
             options={options}
             disabled={disabled}
-            value={options?.filter((opt) => field.value?.includes(opt.value)) || []}
+            value={options?.filter((opt) =>
+              Array.isArray(field.value)
+                ? field.value.includes(opt.value)
+                : false
+            )}
             getOptionLabel={(opt) => opt.label}
             onChange={(_, selectedOptions) => {
               const values = selectedOptions.map((opt) =>
