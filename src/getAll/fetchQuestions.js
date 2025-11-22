@@ -8,7 +8,7 @@ export async function fetchQuestions(routeName,page) {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${import.meta.env.VITE_STRAPI_BEARER}`
+                'Authorization': `Bearer ${import.meta.env.VITE_STRAPI_BEARER}`  
             },
         });
 
