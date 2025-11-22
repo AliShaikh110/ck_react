@@ -64,7 +64,6 @@ const TestSubjectForm = () => {
       isActive: true,
     },
   });
-  console.log("watch: ", watch());
 
   const nameValue = watch("name");
 
@@ -73,7 +72,6 @@ const TestSubjectForm = () => {
     setValue("slug", slugify(nameValue));
   }, [nameValue, setValue]);
 
-  console.log("getInitalData: ", getInitalData.tExamsData);
   useEffect(() => {
     if (!id) return; // create mode
 
@@ -89,9 +87,7 @@ const TestSubjectForm = () => {
 
       const json = await res.json();
       const item = json?.data?.attributes;
-      console.log("item: ", item);
 
-      console.log('item?.test_series_exams?.data?.id: ', item?.test_series_exams?.data[0]?.id);
       reset({
         name: item?.name ?? "",
         order: item?.order ?? 0,
@@ -107,7 +103,6 @@ const TestSubjectForm = () => {
   const isActive = watch("isActive");
 
   const onSubmit = async (data: TestSchemaType) => {
-    console.log("POST DATA:", data);
     const isEdit = Boolean(id);
 
     const url = isEdit

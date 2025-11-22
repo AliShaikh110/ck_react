@@ -20,9 +20,9 @@ export const dummyTopics = [
     { id: 121, title: "Functions" },
 ];
 export const difficultyOptions = [
-    { label: "Easy", value: "Easy" },
-    { label: "Medium", value: "Medium" },
-    { label: "Hard", value: "Hard" },
+    { label: "Easy", value: "easy" },
+    { label: "Medium", value: "medium" },
+    { label: "Hard", value: "hard" },
 ];
 
 export const optionTypeData = [

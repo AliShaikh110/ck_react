@@ -50,22 +50,21 @@ const TestExamCategoriesForm = () => {
       is_active: false,
     },
   });
+
   const { id } = useParams(); // id or undefined
-  // console.log('id: ', id);
+  
   useSlugGenerator<TestSeriesExamType>({
     watch,
     setValue,
     source: "name",
     target: "slug",
   });
-  // console.log('watch: ', watch());
 
   const location = useLocation();
-  // console.log(location);
 
   const isActive = watch("is_active");
   const { tExamsData } = useInitialDataContext();
-  // console.log("getData: ", tExamsData);
+
   useEffect(() => {
     if (!id) return; // CREATE mode
 
@@ -82,12 +81,6 @@ const TestExamCategoriesForm = () => {
 
       const json = await res.json();
       const item = json.data;
-      console.log("item: ", item);
-      console.log(
-        "item.attributes.test_series_exams?.data?.id: ",
-        item.attributes.test_series_exams?.data?.[0].id
-      );
-      console.log("item.attributes.isActive: ", item.attributes.isActive);
 
       reset({
         name: item?.attributes?.name,
@@ -104,7 +97,6 @@ const TestExamCategoriesForm = () => {
   }, [id, reset]);
 
   const onSubmit = async (data: TestSchemaType) => {
-    console.log("POST DATA:", data);
 
     const isEdit = Boolean(id);
 

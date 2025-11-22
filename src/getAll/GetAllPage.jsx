@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchQuestions } from "./fetchQuestions";
-import { Box, Card, Container, Grid, IconButton, Typography } from "@mui/material";
-import { Link, useNavigate, useLocation  } from "react-router-dom";
+import { Box, Button, Card, Container, Grid, IconButton, Typography } from "@mui/material";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import Pagination from '@mui/material/Pagination';
 // import { Link } from 'react-router-dom'
 
@@ -20,7 +20,6 @@ export default function GetAllList({ routeName, lol }) {
         async function loadData() {
             const res = await fetchQuestions(routeName, ppage.page);
             if (res && res.data) {
-                console.log('res: ', res);
                 setQuestions(res.data);
                 setPage(prev => ({
                     ...prev,
@@ -62,11 +61,17 @@ export default function GetAllList({ routeName, lol }) {
                     }}
                 >
                     <Typography variant="h4" sx={{ fontWeight: 700 }}>
-                        All Questions
+                        Exam Categories
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                         {questions.length} total
                     </Typography>
+                    <Button variant="contained" >
+                        <Link to="/test-exams-category">
+                        
+                        Add New Questions
+                        </Link>
+                    </Button>
                 </Box>
 
                 {/* Grid of cards */}

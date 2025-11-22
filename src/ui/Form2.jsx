@@ -7,12 +7,13 @@ import { QuestionSchema } from '../addQeustion/QuestionSchema';
 import FormStructure from '../addQeustion/_components/FormStructure';
 
 export default function QuestionPreview2() {
-    const { id } = useParams();
+    const { qid } = useParams();
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const { control, setValue, watch, handleSubmit, reset } = useForm({
+    const { control, setValue, watch, formState: { errors }, handleSubmit, reset } = useForm({
         defaultValues: {
+            question_title:'',
             subject_tag: 0,
             test_series_topic: 0,
             test_series_exams: [],
@@ -26,34 +27,54 @@ export default function QuestionPreview2() {
     });
 
     const onSubmitt = (data) => {
-        console.log('submit', data);
-        const response = fetch(`https://admin.onlyeducation.co.in/api/t-questions/${id}`, {
-            method: 'PUT',
+        const isEdit = Boolean(id);
+
+        const url = isEdit
+            ? `${import.meta.env.VITE_BASE_URL}t-questions/${id}`
+            : `${import.meta.env.VITE_BASE_URL}t-questions`;
+
+        const method = isEdit ? "PUT" : "POST";
+
+        const response = fetch(`${url}`, {
+            method: method,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer 396dcb5c356426f8c3ce8303bcdc6feb5ecb1fd4aa4aaa59e42e1c7f82b6385cf4107d023cc58cfd61294adb023993a8e58e0aad8759fbf44fc020c1ac02f492c9d42d1f7dc12fc05c8144fbe80f06850c79d4b823241c83c5e153b03d1f8d0316fb9dec1a531c0df061e1f242bab549f17f715b900ba9546f6a6351fdd7dfa8'
+                'Authorization': `Bearer ${import.meta.env.VITE_STRAPI_BEARER}`
             },
             body: JSON.stringify({ data: data }),
         })
-        console.log('response', response);
+
+        console.log(response)
     }
 
     useEffect(() => {
+        if (!qid) return;
+
         const fetchData = async () => {
             try {
                 setIsLoading(true);
-                const response = await fetch(`https://admin.onlyeducation.co.in/api/t-questions/262?populate[subject_tag][fields][0]=name&populate[test_series_topic][fields][0]=name&populate[options]=true`, {
+                const response = await fetch(`${import.meta.env.VITE_BASE_URL}t-questions/${qid}?populate[subject_tag][fields][0]=name&populate[subject_tag][fields][1]=slug&populate[test_series_topic][fields][0]=name&populate[test_series_topic][fields][1]=slug&populate[options]=true&populate[test_series_exams][fields][0]=title&populate[test_series_exams][fields][1]=slug`, {
                     headers: {
                         'Content-Type': 'application/json',
-
-                        'Authorization': `Bearer 396dcb5c356426f8c3ce8303bcdc6feb5ecb1fd4aa4aaa59e42e1c7f82b6385cf4107d023cc58cfd61294adb023993a8e58e0aad8759fbf44fc020c1ac02f492c9d42d1f7dc12fc05c8144fbe80f06850c79d4b823241c83c5e153b03d1f8d0316fb9dec1a531c0df061e1f242bab549f17f715b900ba9546f6a6351fdd7dfa8`
+                        'Authorization': `Bearer ${import.meta.env.VITE_STRAPI_BEARER}`
                     }
                 });
-                console.log('response: ', await response.json());
                 const { data } = await response.json();
-                console.log('data12: ', data);
+                let attributes = data.attributes
 
-                reset(data.attributes);
+                reset({
+                    subject_tag: attributes?.subject_tag?.data?.id,
+                    test_series_topic: attributes?.test_series_topic?.data?.id,
+                    test_series_exams:attributes?.test_series_exams?.data,
+                    question_title:attributes.question_title,
+                    hint: attributes.hint,
+                    marks: attributes.marks,
+                    difficulty: attributes?.difficulty,
+                    explanation: attributes?.explanation,
+                    option_type: attributes?.option_type,
+                    options: attributes?.options,
+                });
+
             } catch (error) {
                 console.error(error);
             } finally {
@@ -65,7 +86,7 @@ export default function QuestionPreview2() {
     }, []);
 
     if (isLoading) return <div>Loading...</div>;
-    // if (!id) return null;
+    // if (!qid) return null;
 
     return (
         <Box

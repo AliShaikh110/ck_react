@@ -37,12 +37,10 @@ const TestSeriesForm = () => {
       test_series_subject: 0,
     },
   });
-  console.log("watch: ", watch());
   const { id } = useParams(); // id will be string | undefined
 
   const getData = useInitialDataContext();
-  console.log('getData: ', getData.subjectTagData);
-  console.log("getTopicData: ", getData?.topicTagData);
+
 
   useEffect(() => {
     if (!id) return; // no id → create mode → don't fetch data
@@ -59,7 +57,6 @@ const TestSeriesForm = () => {
 
       const json = await res.json();
       const item = json?.data?.attributes;
-      console.log("item: ", item);
 
       // Load fetched data into form
       reset({
@@ -91,7 +88,6 @@ const TestSeriesForm = () => {
     });
 
     const result = await response.json();
-    console.log("API RESPONSE:", result);
   };
 
   return (
