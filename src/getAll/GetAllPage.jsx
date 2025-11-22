@@ -14,7 +14,6 @@ export default function GetAllList({ routeName, lol }) {
         total: 0
     })
     const navigate = useNavigate()
-    const location = useLocation();
 
     useEffect(() => {
         async function loadData() {
