@@ -1,6 +1,6 @@
 export const dummySubject = [
     { id: 7, title: "chemistry" },
-    { id: 5, title: "amthematics" },
+    { id: 5, title: "mathematics" },
     { id: 6, title: "physics" },
 ];
 
@@ -20,9 +20,9 @@ export const dummyTopics = [
     { id: 121, title: "Functions" },
 ];
 export const difficultyOptions = [
-    { label: "Easy", value: "Easy" },
-    { label: "Medium", value: "Medium" },
-    { label: "Hard", value: "Hard" },
+    { label: "Easy", value: "easy" },
+    { label: "Medium", value: "medium" },
+    { label: "Hard", value: "hard" },
 ];
 
 export const optionTypeData = [

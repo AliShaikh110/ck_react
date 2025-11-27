@@ -14,6 +14,7 @@ import TestExamCategoriesForm from "./TestExamCategories/components/TestExamCate
 import TestExamsForm from "./test-exams/TestExamsForm";
 import TestExamsFormEdit from "./test-exams/TestExamsFormEdit";
 import { ToastContainer } from "react-toastify";
+import { MeiliDataContextProvide } from "./context/MeiliContext";
 
 function App() {
   return (
@@ -63,18 +64,18 @@ function App() {
         <Route
           path="/questions"
           element={
-            <InitialDataContextProvider>
-              <QuestionPreview2 />
-            </InitialDataContextProvider>
+              <MeiliDataContextProvide>
+                <QuestionPreview2 />
+              </MeiliDataContextProvide>
           }
         />
 
         <Route
           path="/questions/edit/:qid"
           element={
-            <InitialDataContextProvider>
-              <QuestionPreview2 />
-            </InitialDataContextProvider>
+              <MeiliDataContextProvide>
+                <QuestionPreview2 />
+              </MeiliDataContextProvide>
           }
         />
         {/* t-questions */}

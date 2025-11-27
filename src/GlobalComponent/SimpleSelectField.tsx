@@ -40,8 +40,19 @@ const SimpleSelectField = <T extends FieldValues>({
   disabled = false,
   fullWidth = true,
   rules,
-  noneOption = true,
+  noneOption = false,
 }: SimpleSelectFieldProps<T>) => {
+
+
+  let ok = options.filter(o => {
+    return (
+      o.value
+    )
+  })
+
+  console.log(ok)
+
+
   return (
     <Controller
       name={name}
@@ -49,7 +60,6 @@ const SimpleSelectField = <T extends FieldValues>({
       render={({ field, fieldState }) => (
         <FormControl fullWidth={fullWidth} error={!!fieldState.error} disabled={disabled}>
           <InputLabel>{label}</InputLabel>
-
           <Select
             {...field}
             label={label}
@@ -76,9 +86,10 @@ const SimpleSelectField = <T extends FieldValues>({
                 field.onChange(e.target.value);
               }
             }}
+
+
           >
             {noneOption && (<MenuItem value={0}>
-              <i>none</i>
             </MenuItem>)}
 
             {options?.map((opt) => (

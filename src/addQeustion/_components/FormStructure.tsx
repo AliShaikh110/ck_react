@@ -1,4 +1,5 @@
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, IconButton, List, ListItem, ListItemText, Paper, Typography } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 import SimpleSelectField, {
   Option,
 } from "../../GlobalComponent/SimpleSelectField";
@@ -15,12 +16,17 @@ import OptionsFieldArray from "../components/OptionsFieldArray";
 import {
   difficultyOptions,
   dummySubject,
-  dummyTopics, 
+  dummyTopics,
   optionTypeData,
   optionLabel
 } from "./data";
 import useInitialDataContext from "./InitalContext";
 import { useEffect, useState } from "react";
+import TopicsPage from "../../GlobalComponent/TopicsPage";
+import TopicSearchBar from "../../components/TopicSearchBar";
+import UseMeiliDataContext from "../../context/MeiliContext";
+import SimpleMultiAutoComplete from "../../GlobalComponent/SimpleMultiAutoComplete";
+import { SingleSelectAuto } from "../../GlobalComponent/SingleSelectAuto";
 
 export default function FormStructure({
   control,
@@ -31,16 +37,27 @@ export default function FormStructure({
   watch: UseFormWatch<QuestionSchemaType>;
   setValue: UseFormSetValue<QuestionSchemaType>;
 }) {
-
   const {
-    data: { subjectTagData, topicTagData, tExamsData },
-    setSubject,
-  } = useInitialDataContext();
+    data,
+    deleteDropItem
+  } = UseMeiliDataContext()
 
-  useEffect(() => {
-    setSubject(watch("subject_tag"))
-  },[watch("subject_tag")])  
-  
+
+  const deleteData = (id: number, type: any) => {
+    deleteDropItem(id, type)
+  }
+
+  const topics = data.topicData || [];
+  const subjects = data.subjectData || [];
+
+
+  const subjectOptions = subjects
+    .filter((s) => typeof s.id === "number") // keep only items with id
+    .map((s) => ({
+      value: s.id as number,
+      label: s.title || s.name || s.slug || "",
+    }));
+
   return (
     <Grid
       container
@@ -50,7 +67,7 @@ export default function FormStructure({
       <Grid container size={12}>
         <Typography variant="h4">Question Form</Typography>
       </Grid>
-      <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+      {/* <Grid size={{ xs: 12, md: 6, lg: 4 }}>
         <Typography variant="subtitle1">Select subject</Typography>
         <SimpleSelectField
           label=""
@@ -65,15 +82,137 @@ export default function FormStructure({
           }
           rules={{ required: "Please select a subject" }}
         />
+      </Grid> */}
+
+      <Grid>
+        <TopicSearchBar routeName="test-series-subject" typeName="subjectData" dropdownType="single" />
+        <Box sx={{ mt: 3 }}>
+          <Typography
+            variant="subtitle2"
+            color="text.secondary"
+            sx={{ mb: 1 }}
+          >
+            Selected topics
+          </Typography>
+
+          {subjects.length === 0 ? (
+            <Typography variant="body2" color="text.secondary">
+              No topics added yet. Start searching and selecting from the dropdown.
+            </Typography>
+          ) : (
+            <Paper
+              variant="outlined"
+              sx={{
+                borderRadius: 2,
+                maxHeight: 240,
+                overflowY: "auto",
+              }}
+            >
+              <List dense disablePadding>
+                {subjects.map((d, index) => (
+                  <ListItem
+                    key={d.id ?? index}
+                    secondaryAction={
+                      <IconButton
+                        edge="end"
+                        size="small"
+                        onClick={() => deleteData(d.id as number, "subjectData")}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    }
+                  >
+                    <ListItemText
+                      primary={d.title || d.name || d.slug || "Untitled topic"}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </Paper>
+          )}
+        </Box>
       </Grid>
+
       <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-        {/* <SimpleSelectField /> */}
+        <Typography variant="subtitle1">
+          Select subject
+        </Typography>
+
+        {/* <SimpleSelectField
+          control={control}
+          name='subject_tag'
+          options={
+            subjects?.map((subject) => ({
+              value: subject.id,
+              label: subject.title,
+            })) as Option[]
+          }
+        /> */}
+
+        <SingleSelectAuto
+          name="subject_tag"
+          control={control}
+          label="Select Exam"
+          options={subjectOptions}
+          externalValue={subjectOptions[0]?.value}
+        />
+
+      </Grid>
+
+      <Grid>
+        <TopicSearchBar routeName="t-topic" typeName="topicData" dropdownType="multi" />
+        <Box sx={{ mt: 3 }}>
+          <Typography
+            variant="subtitle2"
+            color="text.secondary"
+            sx={{ mb: 1 }}
+          >
+            Selected topics
+          </Typography>
+
+          {topics.length === 0 ? (
+            <Typography variant="body2" color="text.secondary">
+              No topics added yet. Start searching and selecting from the dropdown.
+            </Typography>
+          ) : (
+            <Paper
+              variant="outlined"
+              sx={{
+                borderRadius: 2,
+                maxHeight: 240,
+                overflowY: "auto",
+              }}
+            >
+              <List dense disablePadding>
+                {topics.map((d, index) => (
+                  <ListItem
+                    key={d.id ?? index}
+                    secondaryAction={
+                      <IconButton
+                        edge="end"
+                        size="small"
+                        onClick={() => deleteData(d.id as number, "topicData")}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    }
+                  >
+                    <ListItemText
+                      primary={d.title || d.name || d.slug || "Untitled topic"}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </Paper>
+          )}
+        </Box>
+      </Grid>
+      {/* <Grid size={{ xs: 12, md: 6, lg: 4 }}>        
         <Typography variant="subtitle1">Select topic</Typography>
         <SimpleSelectField
           label=""
           name="test_series_topic"
           control={control}
-          // label="Test Series Topic"
           options={
             topicTagData?.map((topic) => ({
               value: topic.id,
@@ -83,7 +222,7 @@ export default function FormStructure({
           rules={{ required: "Please select a Topic" }}
           disabled={watch("subject_tag") == 0 ? true : false}
         />
-      </Grid>
+      </Grid> */}
       {/* <Grid size={{ xs: 12, md: 6, lg: 4 }}>
         <Typography variant="subtitle1">Select Exams</Typography>
         <SimpleSelectField
@@ -123,8 +262,7 @@ export default function FormStructure({
           rules={{ required: "Please select a Topic" }}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-        {/* <SimpleSelectField /> */}
+      {/* <Grid size={{ xs: 12, md: 6, lg: 4 }}>
         <Typography variant="subtitle1">Option type</Typography>
         <SimpleSelectField
           label=""
@@ -135,7 +273,7 @@ export default function FormStructure({
           rules={{ required: "Please select a Topic" }}
           noneOption={false}
         />
-      </Grid>
+      </Grid> */}
       <Grid size={{ xs: 12, md: 6, lg: 4 }}>
         {/* <SimpleSelectField /> */}
         <Typography variant="subtitle1">Hint</Typography>
@@ -147,7 +285,7 @@ export default function FormStructure({
           rules={{ required: "Please select a Topic" }}
         />
       </Grid>
-      <Grid container size={12}>
+      {/* <Grid container size={12}>
         <Grid size={{ xs: 12, md: 6 }}>
           <Typography variant="subtitle1">Question Title</Typography>
           <MainEditor
@@ -166,14 +304,15 @@ export default function FormStructure({
             watch={watch}
           />
         </Grid>
-      </Grid>
-      <Grid size={12}>
+      </Grid> */}
+      {/* <Grid size={12}>
         <OptionsFieldArray
           watch={watch}
           control={control}
           setValue={setValue}
         />
-      </Grid>
+      </Grid> */}
+
       <Grid size={12} sx={{ textAlign: "center", paddingBlock: 2 }}>
         <Button variant="contained" type="submit" sx={{ paddingInline: 10 }}>
           Submit

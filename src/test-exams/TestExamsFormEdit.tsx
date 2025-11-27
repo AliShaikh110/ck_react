@@ -31,29 +31,40 @@ export default function TestExamsFormEdit() {
             marking_positive: 0,
             timer: 0,
             test_series_subjects: [],
-            difficulty: "Easy",
+            difficulty: "easy",
             test_series_topics: [],
         },
         resolver: zodResolver(examsSchema),
     });
 
+    console.log(watch())
 
     const onSubmitt = (data: ExamsSchemaType) => {
-        const response = fetch(`https://admin.onlyeducation.co.in/api/t-exams/${id}`, {
-            method: 'PUT',
+        console.log('data: ', data);
+
+        const url = id
+            ? `${import.meta.env.VITE_BASE_URL}t-exams/${id}` // UPDATE
+            : `${import.meta.env.VITE_BASE_URL}t-exams`; // CREATE
+
+        const method = id ? "PUT" : "POST";
+
+        const response = fetch(`${url}`, {
+            method: method,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${import.meta.env.VITE_STRAPI_BEARER}`
             },
             body: JSON.stringify({ data: data }),
         })
+
+        console.log(response)
     }
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setIsLoading(true);
-                const response = await fetch(`https://admin.onlyeducation.co.in/api/t-exams/${id}?populate[test_series_category][fields][0]=name&populate[test_series_subjects][fields][0]=name&populate[test_series_topics][fields][0]=name`, {
+                const response = await fetch(`${import.meta.env.VITE_BASE_URL}t-exams/${id}?populate[test_series_category][fields][0]=name&populate[test_series_subjects][fields][0]=name&populate[test_series_topics][fields][0]=name`, {
                     headers: {
                         'Content-Type': 'application/json',
 
@@ -61,7 +72,6 @@ export default function TestExamsFormEdit() {
                     }
                 });
                 const { data } = await response.json();
-                console.log('data: ', data);
 
                 reset({
                     title: data.attributes.title,

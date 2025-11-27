@@ -5,18 +5,23 @@ import { useParams } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { QuestionSchema } from '../addQeustion/QuestionSchema';
 import FormStructure from '../addQeustion/_components/FormStructure';
+import UseMeiliDataContext from '../context/MeiliContext';
 
 export default function QuestionPreview2() {
     const { qid } = useParams();
 
     const [isLoading, setIsLoading] = useState(false);
 
+    const {
+        data        
+      } = UseMeiliDataContext()
+
     const { control, setValue, watch, formState: { errors }, handleSubmit, reset } = useForm({
         defaultValues: {
             question_title:'',
             subject_tag: 0,
-            test_series_topic: 0,
-            test_series_exams: [],
+            test_series_topic: [],
+            // test_series_exams: [],
             marks: 0,
             difficulty: "easy",
             explanation: "",
@@ -26,25 +31,28 @@ export default function QuestionPreview2() {
         resolver: zodResolver(QuestionSchema),
     });
 
-    const onSubmitt = (data) => {
-        const isEdit = Boolean(id);
-        console.log(data)
+
+    const onSubmitt = (data1) => {
+
+        console.log("data1:",data1)
+
+        const isEdit = Boolean(qid);
         const url = isEdit
-            ? `${import.meta.env.VITE_BASE_URL}t-questions/${id}`
+            ? `${import.meta.env.VITE_BASE_URL}t-questions/${qid}`
             : `${import.meta.env.VITE_BASE_URL}t-questions`;
 
         const method = isEdit ? "PUT" : "POST";
 
-        const response = fetch(`${url}`, {
-            method: method,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${import.meta.env.VITE_STRAPI_BEARER}`
-            },
-            body: JSON.stringify({ data: data }),
-        })
+        // const response = fetch(`${url}`, {
+        //     method: method,
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'Authorization': `Bearer ${import.meta.env.VITE_STRAPI_BEARER}`
+        //     },
+        //     body: JSON.stringify({ data: data }),
+        // })
 
-        console.log("response",response)
+        // console.log("response",response)
     }
 
     useEffect(() => {
@@ -67,7 +75,7 @@ export default function QuestionPreview2() {
                 reset({
                     subject_tag: attributes?.subject_tag?.data?.id,
                     test_series_topic: attributes?.test_series_topic?.data?.id,
-                    test_series_exams:attributes?.test_series_exams?.data,
+                    // test_series_exams:attributes?.test_series_exams?.data,
                     question_title:attributes.question_title,
                     hint: attributes.hint,
                     marks: attributes.marks,
@@ -96,6 +104,7 @@ export default function QuestionPreview2() {
             onSubmit={handleSubmit(onSubmitt)}
         >
             <FormStructure control={control} setValue={setValue} watch={watch} />
+            
         </Box>
     )
 }

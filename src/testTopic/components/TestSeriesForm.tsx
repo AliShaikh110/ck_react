@@ -41,7 +41,6 @@ const TestSeriesForm = () => {
     },
   });
   const { qid } = useParams(); // qid will be string | undefined
-    console.log('watch: ', watch("test_series_subject"));
 
   useSlugGenerator<TestSeriesSchemaType>({
     watch,
@@ -79,10 +78,7 @@ const TestSeriesForm = () => {
         is_active: item?.is_active ?? true,
         test_series_subject: item.test_series_subject?.data.id ?? 0,
       });
-      console.log(
-        "item.test_series_subject?.data.id: ",
-        item.test_series_subject?.data.id
-      );
+
     };
 
     fetchData();
@@ -158,7 +154,7 @@ const TestSeriesForm = () => {
         {/* SUBJECT RELATION (multi select) */}
         <Grid size={{ xs: 12, md: 6 }}>
           <Typography variant="subtitle1">Test Series Subject</Typography>
-          <SimpleMultiAutoComplete
+          <SimpleSelectField
             name="test_series_subject"
             control={control}
             label=""
@@ -169,7 +165,6 @@ const TestSeriesForm = () => {
             placeholder="Add relation"
             rules={{ required: "Select at least one subject" }}
           />
-          
         </Grid>
 
         {/* ORDER */}
