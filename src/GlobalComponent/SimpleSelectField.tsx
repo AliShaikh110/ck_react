@@ -50,7 +50,7 @@ const SimpleSelectField = <T extends FieldValues>({
     )
   })
 
-  console.log(ok)
+  // console.log(ok)
 
 
   return (

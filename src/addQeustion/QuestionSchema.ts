@@ -12,7 +12,7 @@ export const QuestionSchema = z.object({
   //   .array(z.number().min(1))
   //   .min(1, "At least one test series exam is required"),
   // test_series_topic: z.number().min(1, "Topic is required"),
-  // test_series_topic: z.array(z.number().min(1)).min(1,"Atleast 1 topic is required")
+  test_series_topic: z.array(z.number().min(1)).min(1,"Atleast 1 topic is required")
   // options: z
   //   .array(
   //     z.object({

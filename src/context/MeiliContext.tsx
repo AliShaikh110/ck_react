@@ -31,7 +31,7 @@ export type KeyType = keyof MeiliDataContextType;
 // Public API of this context
 export type MiliDataContextType = {
   data: MeiliDataContextType;
-  addDropItem: (title: string, id: number, type: KeyType, dropdownType: string) => void;
+  // addDropItem: (title: string, id: number, type: KeyType, dropdownType: string) => void;
   deleteDropItem: (id: number, type: KeyType) => void;
 };
 
@@ -45,35 +45,35 @@ export function MeiliDataContextProvide({ children }: { children: ReactNode }) {
     category: [],
   });
 
-  const addDropItem: MiliDataContextType["addDropItem"] = (
-    title,
-    id,
-    type,
-    dropdownType
-  ) => {
+  // const addDropItem: MiliDataContextType["addDropItem"] = (
+  //   title,
+  //   id,   
+  //   type,
+  //   dropdownType
+  // ) => {
 
-    const newItem = { id, title, type };
+  //   const newItem = { id, title, type };
 
-    setData(prev => {
+  //   setData(prev => {
 
-      if (dropdownType === "single") {
-        return {
-          ...prev,
-          [type]: [newItem],
-        };
-      }
+  //     if (dropdownType === "single") {
+  //       return {
+  //         ...prev,
+  //         [type]: [newItem],
+  //       };
+  //     }
 
-      const list = prev[type];
-      const alreadyExists = list.some(item => item.id === id);
-      if (alreadyExists) return prev;
+  //     const list = prev[type];
+  //     const alreadyExists = list.some(item => item.id === id);
+  //     if (alreadyExists) return prev;
 
-      return {
-        ...prev,
-        [type]: [...list, newItem],
-      };
-    });
+  //     return {
+  //       ...prev,
+  //       [type]: [...list, newItem],
+  //     };
+  //   });
 
-  };
+  // };
 
   const deleteDropItem: MiliDataContextType["deleteDropItem"] = (id, type) => {
 
@@ -87,7 +87,8 @@ export function MeiliDataContextProvide({ children }: { children: ReactNode }) {
   }
 
   return (
-    <MeiliContext.Provider value={{ data, addDropItem, deleteDropItem }}>
+    // addDropItem
+    <MeiliContext.Provider value={{ data,  deleteDropItem }}>
       {children}
     </MeiliContext.Provider>
   );

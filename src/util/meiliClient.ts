@@ -16,8 +16,9 @@ export function meiliIndex(routeName:string) {
   const topicIndex = meiliClient.index(
     routeName
   );
+    // console.log('topicIndex: ', topicIndex);
 
   return topicIndex
-
+  
 
 }

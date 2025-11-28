@@ -26,7 +26,9 @@ function App() {
           path="/"
           element={
             <InitialDataContextProvider>
-              <Index />
+              <MeiliDataContextProvide>
+                <Index />
+              </MeiliDataContextProvide>
             </InitialDataContextProvider>
           }
         />
@@ -64,18 +66,18 @@ function App() {
         <Route
           path="/questions"
           element={
-              <MeiliDataContextProvide>
-                <QuestionPreview2 />
-              </MeiliDataContextProvide>
+            <MeiliDataContextProvide>
+              <QuestionPreview2 />
+            </MeiliDataContextProvide>
           }
         />
 
         <Route
           path="/questions/edit/:qid"
           element={
-              <MeiliDataContextProvide>
-                <QuestionPreview2 />
-              </MeiliDataContextProvide>
+            <MeiliDataContextProvide>
+              <QuestionPreview2 />
+            </MeiliDataContextProvide>
           }
         />
         {/* t-questions */}
@@ -131,9 +133,28 @@ function App() {
         {/* t-topic */}
 
         {/* t-exams */}
-        <Route path="/exams-list" element={<GetAllList routeName="t-exams" lol="test-exams" />} />
-        <Route path="/test-exams" element={<InitialDataContextProvider> <TestExamsForm /> </InitialDataContextProvider>} />
-        <Route path="/test-exams/edit/:id" element={<InitialDataContextProvider> <TestExamsFormEdit /> </InitialDataContextProvider>} />
+        <Route
+          path="/exams-list"
+          element={<GetAllList routeName="t-exams" lol="test-exams" />}
+        />
+        <Route
+          path="/test-exams"
+          element={
+            <InitialDataContextProvider>
+              {" "}
+              <TestExamsForm />{" "}
+            </InitialDataContextProvider>
+          }
+        />
+        <Route
+          path="/test-exams/edit/:id"
+          element={
+            <InitialDataContextProvider>
+              {" "}
+              <TestExamsFormEdit />{" "}
+            </InitialDataContextProvider>
+          }
+        />
         {/* t-exams */}
 
         {/* <Route
