@@ -19,14 +19,14 @@ import UseMeiliDataContext from "../../context/MeiliContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import SimpleSelectField from "../../GlobalComponent/SimpleSelectField";
 
-export default function FormStructure({}: // control,
-// watch,
-// setValue,
-{
-  // control: Control<QuestionSchemaType>;
-  // watch: UseFormWatch<QuestionSchemaType>;
-  // setValue: UseFormSetValue<QuestionSchemaType>;
-}) {
+export default function FormStructure({ }: // control,
+  // watch,
+  // setValue,
+  {
+    // control: Control<QuestionSchemaType>;
+    // watch: UseFormWatch<QuestionSchemaType>;
+    // setValue: UseFormSetValue<QuestionSchemaType>;
+  }) {
   const {
     control,
     watch,
@@ -35,7 +35,7 @@ export default function FormStructure({}: // control,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      subject_tag: 0,
+      subject_tag: [],
       test_series_topic: [],
       // test_series_exams: [],
       marks: 0,
@@ -53,7 +53,6 @@ export default function FormStructure({}: // control,
     resolver: zodResolver(QuestionSchema),
     // resolver: zodResolver(QuestionSchema),
   });
-  console.log("watch: ", watch());
 
   // console.log('watch: ', watch());
   const onSubmitt = async (data: any) => {
@@ -72,23 +71,6 @@ export default function FormStructure({}: // control,
   };
   // deleteDropItem
   const { data } = UseMeiliDataContext();
-  // console.log("data: ", data);
-
-  // const deleteData = (id: number, type: any) => {
-  //   deleteDropItem(id, type);
-  // };
-  // console.log('watch: ', watch());
-
-  // const topics = data.topicData || [];
-  // const subjects = data.subjectData || [];
-  // console.log("data.subjectData: ", data?.subjectData?.[0]?.id);
-  // setValue("subject_tag", data?.subjectData?.[0]?.id || 0);
-  // const subjectOptions = subjects
-  //   .filter((s) => typeof s.id === "number") // keep only items with id
-  //   .map((s) => ({
-  //     value: s.id as number,
-  //     label: s.title || s.name || s.slug || "",
-  //   }));
 
   return (
     <Box component={"form"} onSubmit={handleSubmit(onSubmitt)}>
@@ -100,22 +82,6 @@ export default function FormStructure({}: // control,
         <Grid container size={12}>
           <Typography variant="h4">Question Form</Typography>
         </Grid>
-        {/* <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-        <Typography variant="subtitle1">Select subject</Typography>
-        <SimpleSelectField
-          label=""
-          name="subject_tag"
-          control={control}
-          // label="Select Subject"
-          options={
-            subjectTagData?.map((subject) => ({
-              value: subject.id,
-              label: subject.attributes.name,
-            })) as Option[]
-          }
-          rules={{ required: "Please select a subject" }}
-        />
-      </Grid> */}
 
         <Grid>
           <TopicSearchBar
@@ -123,19 +89,16 @@ export default function FormStructure({}: // control,
             watch={watch}
             fieldName="subject_tag"
             routeName="test-series-subject"
-            typeName="subjectData"
-            dropdownType="single"
+            multiSelect
           />
         </Grid>
         <Grid>
-          <TopicSearchBar
+          {/* <TopicSearchBar
             setValue={setValue}
             watch={watch}
             fieldName="test_series_topic"
             routeName="t-topic"
-            typeName="topicData"
-            dropdownType="multi"
-          />
+          /> */}
           {/* <Box sx={{ mt: 3 }}>
             <Typography
               variant="subtitle2"

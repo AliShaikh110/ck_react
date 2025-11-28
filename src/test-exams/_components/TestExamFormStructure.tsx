@@ -10,6 +10,7 @@ import { ExamsSchemaType } from '../../validation/testSeriesExamSchema'
 import { useEffect } from 'react'
 import { slugify } from '../../testSubject/components/TestSubjectForm'
 import SimpleMultiAutoComplete from '../../GlobalComponent/SimpleMultiAutoComplete'
+import TopicSearchBar from '../../components/TopicSearchBar'
 
 export default function TestExamFormStructure({
     control,
@@ -28,7 +29,7 @@ export default function TestExamFormStructure({
     // useEffect(() => {
     //     setSubject(watch('test_series_subjects'));
     // }, [watch('test_series_subjects')]);
-
+    console.log('watchewfuihdwsfoihwdsfuhfdufdho', watch())
     return (
         <Grid
             container
@@ -134,33 +135,6 @@ export default function TestExamFormStructure({
                 />
             </Grid>
             <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-                <Typography variant="subtitle1">
-                    Select subject
-                </Typography>
-                <SimpleMultiAutoComplete
-                    control={control}
-                    name='test_series_subjects'
-                    options={
-                        subjectTagData?.map((subject) => ({
-                            value: subject.id,
-                            label: subject.attributes.name,
-                        })) as Option[]
-                    }
-                />
-                {/* <SimpleSelectField
-                    name="test_series_subjects"
-                    control={control}
-                    // label="Select Subject"
-                    options={
-                        subjectTagData?.map((subject) => ({
-                            value: subject.id,
-                            label: subject.attributes.name,
-                        })) as Option[]
-                    }
-                    rules={{ required: "Please select a subject" }}
-                /> */}
-            </Grid>
-            <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                 {/* <SimpleSelectField /> */}
                 <Typography variant="subtitle1">
                     Difficulty
@@ -173,15 +147,50 @@ export default function TestExamFormStructure({
                     rules={{ required: "Please select a Topic" }}
                 />
             </Grid>
-            <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-                {/* <SimpleSelectField /> */}
+            <Grid container size={12}>
+
+
+                <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                    <TopicSearchBar
+                        setValue={setValue}
+                        watch={watch}
+                        fieldName="test_series_subjects"
+                        routeName="test-series-subject"
+                        multiSelect
+                    />
+                    {/* <Typography variant="subtitle1">
+                    Select subject
+                </Typography>
+                <SimpleMultiAutoComplete
+                    control={control}
+                    name='test_series_subjects'
+                    options={
+                        subjectTagData?.map((subject) => ({
+                            value: subject.id,
+                            label: subject.attributes.name,
+                        })) as Option[]
+                    }
+                /> */}
+                </Grid>
+                <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                    <TopicSearchBar
+                        setValue={setValue}
+                        watch={watch}
+                        fieldName="test_series_topics"
+                        routeName="t-topic"
+                        multiSelect
+                    />
+                </Grid>
+            </Grid>
+
+
+            {/* <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                 <Typography variant="subtitle1">
                     Select topic
                 </Typography>
                 <SimpleMultiAutoComplete
                     name="test_series_topics"
                     control={control}
-                    // label="Test Series Topic"
                     options={
                         topicTagData?.map((topic) => ({
                             value: topic.id,
@@ -190,12 +199,12 @@ export default function TestExamFormStructure({
                     }
                     rules={{ required: "Please select a Topic" }}
                 />
-            </Grid>
+            </Grid> */}
             <Grid size={12} sx={{ textAlign: 'center', paddingBlock: 2 }}>
                 <Button variant="contained" type="submit" sx={{ paddingInline: 10 }}>
                     Submit
                 </Button>
             </Grid>
-        </Grid>
+        </Grid >
     )
 }
