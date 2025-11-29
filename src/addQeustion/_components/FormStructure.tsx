@@ -20,14 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import SimpleSelectField from "../../GlobalComponent/SimpleSelectField";
 import OptimizedTopicSearch from "./OptimizedTopicSearch";
 
-export default function FormStructure({}: // control,
-// watch,
-// setValue,
-{
-  // control: Control<QuestionSchemaType>;
-  // watch: UseFormWatch<QuestionSchemaType>;
-  // setValue: UseFormSetValue<QuestionSchemaType>;
-}) {
+export default function FormStructure() {
   const {
     control,
     watch,
@@ -58,17 +51,15 @@ export default function FormStructure({}: // control,
 
   // console.log('watch: ', watch());
   const onSubmitt = async (data: any) => {
-    const response = await fetch(
-      "https://admin.onlyeducation.co.in/api/t-questions",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_STRAPI_BEARER}`,
-        },
-        body: JSON.stringify({ data: data }),
-      }
-    );
+    const url = `${import.meta.env.VITE_BASE_URL}t-questions`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${import.meta.env.VITE_STRAPI_BEARER}`,
+      },
+      body: JSON.stringify({ data: data }),
+    });
     const datas = await response.json();
   };
   // deleteDropItem
@@ -99,7 +90,7 @@ export default function FormStructure({}: // control,
         sx={{ marginBlockStart: 10, paddingInline: 3, paddingBlockEnd: 5 }}
       >
         <Grid container size={12}>
-          <Typography variant="h4">Question Form</Typography>
+          <Typography variant="h4">Questionas Form</Typography>
         </Grid>
         {/* <Grid size={{ xs: 12, md: 6, lg: 4 }}>
         <Typography variant="subtitle1">Select subject</Typography>
@@ -118,17 +109,16 @@ export default function FormStructure({}: // control,
         />
       </Grid> */}
         <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-          subject async
           <OptimizedTopicSearch
             routeName="test-series-subject"
             dropdownType="single"
             fieldName="subject_tag"
             setValue={setValue}
             watch={watch}
+            required={true}
           />
         </Grid>
         <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-          topic async
           <OptimizedTopicSearch
             routeName="t-topic"
             dropdownType="multi"

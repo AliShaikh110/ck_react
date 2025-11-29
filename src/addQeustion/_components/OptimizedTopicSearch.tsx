@@ -5,6 +5,7 @@ import {
   CircularProgress,
   Chip,
   Typography,
+  Box,
 } from "@mui/material";
 import { searchTopics } from "../../util/topicSearch";
 import type { SxProps, Theme } from "@mui/material";
@@ -75,7 +76,11 @@ const OptimizedTopicSearch = <
       timer = setTimeout(() => fn(...args), delay);
     };
   };
-
+  useEffect(() => {
+    if (open) {
+      debouncedFetch(query || "");
+    }
+  }, [open]);
   console.log("routeName: ", routeName);
   const debouncedFetch = useMemo(
     () =>
@@ -85,7 +90,19 @@ const OptimizedTopicSearch = <
           const results = await searchTopics(text, routeName);
           console.log("results: ", results);
 
+          // setOptions((prev) => {
+          //   const merged = [...results, ...selectedOptions];
+          //   return Array.from(
+          //     new Map(merged.map((item) => [item.id, item])).values()
+          //   );
+          // });
           setOptions((prev) => {
+            if (dropdownType === "single") {
+              // single → never re-add removed selected option
+              return results;
+            }
+
+            // multi → keep merge logic
             const merged = [...results, ...selectedOptions];
             return Array.from(
               new Map(merged.map((item) => [item.id, item])).values()
@@ -118,8 +135,20 @@ const OptimizedTopicSearch = <
     ) {
       setSelectedOptions(defaultValue);
 
+      // setOptions((prev) => {
+      //   const merged = [...prev, ...defaultValue];
+      //   return Array.from(
+      //     new Map(merged.map((item) => [item.id, item])).values()
+      //   );
+      // });
       setOptions((prev) => {
-        const merged = [...prev, ...defaultValue];
+        if (dropdownType !== "multi") {
+          // single → never re-add removed selected option
+          return defaultValue;
+        }
+
+        // multi → keep merge logic
+        const merged = [...defaultValue, ...selectedOptions];
         return Array.from(
           new Map(merged.map((item) => [item.id, item])).values()
         );
@@ -131,25 +160,54 @@ const OptimizedTopicSearch = <
   const selected = watch(fieldName);
 
   // ---------------- HANDLE SELECT ----------------
+  // const handleSelect = (_: any, value: TopicHit[] | TopicHit | null) => {
+  //   if (!value) {
+  //     setValue(fieldName, [] as TSchema[TField]);
+  //     return;
+  //   }
+
+  //   if (dropdownType === "multi") {
+  //     const val = value as TopicHit[];
+  //     setSelectedOptions(val);
+  //     setValue(fieldName, val as TSchema[TField]); // store full objects
+  //   } else {
+  //     // const id = (value as TopicHit)?.id ?? 0;
+  //     // setValue(fieldName, id as TSchema[TField]); // store only id
+  //     // single → always save array of one object
+  //     const obj = value as TopicHit;
+  //     const arr = obj ? [obj] : [];
+  //     setSelectedOptions(arr);
+  //     setValue(fieldName, arr as TSchema[TField]);
+  //   }
+  // };
   const handleSelect = (_: any, value: TopicHit[] | TopicHit | null) => {
     if (dropdownType === "multi") {
       const val = value as TopicHit[];
       setSelectedOptions(val);
-      setValue(fieldName, val as TSchema[TField]); // store full objects
+      setValue(fieldName, val as TSchema[TField]);
     } else {
-      const id = (value as TopicHit)?.id ?? 0;
-      setValue(fieldName, id as TSchema[TField]); // store only id
+      const obj = (value as TopicHit) ?? null;
+
+      // single → store array of one or empty array
+      const arr = obj ? [obj] : [];
+
+      setSelectedOptions(arr);
+      setValue(fieldName, arr as TSchema[TField]);
     }
   };
 
   // ---------------- FORMAT VALUE FOR AUTOCOMPLETE ----------------
+  // const autoValue =
+  //   dropdownType === "single"
+  //     ? options.find((opt) => opt.id === selected) || null
+  //     : selectedOptions;
+  // const autoValue =
+  //   dropdownType === "single" ? selectedOptions[0] ?? null : selectedOptions;
   const autoValue =
-    dropdownType === "single"
-      ? options.find((opt) => opt.id === selected) || null
-      : selectedOptions;
-
+    dropdownType === "single" ? selectedOptions[0] || null : selectedOptions;
   return (
     <>
+      {/* <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}> */}
       {showLabel && (
         <Typography
           variant="subtitle1"
@@ -158,10 +216,14 @@ const OptimizedTopicSearch = <
         >
           {label}
           {required && (
-            <Typography sx={{ color: "red", marginLeft: 2 }}>*</Typography>
+            <Typography component="span" sx={{ color: "red" }}>
+              *
+            </Typography>
           )}
         </Typography>
       )}
+      {/* </Box> */}
+
       {/* AUTOCOMPLETE FIELD */}
       <Autocomplete
         size="small"
