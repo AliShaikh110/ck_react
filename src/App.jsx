@@ -1,7 +1,6 @@
 import { Routes, Route, Link } from "react-router-dom";
 // import Home from './pages/Home'
 // import EditPage from './pages/EditPage'
-import GetAllList from "./getAll/GetAllPage";
 import QuestionPreview from "./ui/Form";
 import QuestionPreview2 from "./ui/Form2";
 import ResponsiveAppBar from "./ui/Header";
@@ -13,18 +12,23 @@ import TestSubjectPage from "./testSubject/Index";
 import TestExamCategoriesForm from "./TestExamCategories/components/TestExamCategoriesForm";
 import TestExamsForm from "./test-exams/TestExamsForm";
 import TestExamsFormEdit from "./test-exams/TestExamsFormEdit";
+import { ToastContainer } from "react-toastify";
+import { MeiliDataContextProvide } from "./context/MeiliContext";
+import GetAllList from "./getAll/GetAllPage";
 
 function App() {
   return (
     <div>
       <DrawerAppBar />
-
+      <ToastContainer position="top-center" autoClose={2000} />
       <Routes>
         <Route
           path="/"
           element={
             <InitialDataContextProvider>
-              <Index />
+              <MeiliDataContextProvide>
+                <Index />
+              </MeiliDataContextProvide>
             </InitialDataContextProvider>
           }
         />
@@ -59,17 +63,21 @@ function App() {
           path="/questions-list"
           element={<GetAllList routeName="t-questions" lol="questions" />}
         />
-        <Route path="/questions" element={
-          <InitialDataContextProvider>
-            <QuestionPreview2 />
-          </InitialDataContextProvider>
-        } />
-
-        <Route path="/questions/edit/:qid"
+        <Route
+          path="/questions"
           element={
-            <InitialDataContextProvider>
+            <MeiliDataContextProvide>
               <QuestionPreview2 />
-            </InitialDataContextProvider>
+            </MeiliDataContextProvide>
+          }
+        />
+
+        <Route
+          path="/questions/edit/:qid"
+          element={
+            <MeiliDataContextProvide>
+              <QuestionPreview2 />
+            </MeiliDataContextProvide>
           }
         />
         {/* t-questions */}
@@ -89,25 +97,65 @@ function App() {
             </InitialDataContextProvider>
           }
         />
-        <Route path="/test-subject/edit/:qid" element={
-          <InitialDataContextProvider>
-            <TestSubjectPage />
-          </InitialDataContextProvider>
-        } />
+        <Route
+          path="/test-subject/edit/:qid"
+          element={
+            <InitialDataContextProvider>
+              <TestSubjectPage />
+            </InitialDataContextProvider>
+          }
+        />
         {/* t-subjects */}
 
         {/* t-topic */}
-        <Route path="/test-topic-list" element={<GetAllList routeName="t-topics" lol="test-topic" />} />
-        <Route path="/test-topic" element={<InitialDataContextProvider> <TestTopicPage /> </InitialDataContextProvider>} />
-        <Route path="/test-topic/edit/:qid" element={<InitialDataContextProvider> <TestTopicPage /> </InitialDataContextProvider>} />
+        <Route
+          path="/test-topic-list"
+          element={<GetAllList routeName="t-topics" lol="test-topic" />}
+        />
+        <Route
+          path="/test-topic"
+          element={
+            <InitialDataContextProvider>
+              {" "}
+              <TestTopicPage />{" "}
+            </InitialDataContextProvider>
+          }
+        />
+        <Route
+          path="/test-topic/edit/:qid"
+          element={
+            <InitialDataContextProvider>
+              {" "}
+              <TestTopicPage />{" "}
+            </InitialDataContextProvider>
+          }
+        />
         {/* t-topic */}
 
         {/* t-exams */}
-        <Route path="/exams-list" element={<GetAllList routeName="t-exams" lol="test-exams" />} />
-        <Route path="/test-exams" element={<InitialDataContextProvider> <TestExamsForm /> </InitialDataContextProvider>} />
-        <Route path="/test-exams/edit/:qid" element={<InitialDataContextProvider> <TestExamsForm /> </InitialDataContextProvider>} />
+        <Route
+          path="/exams-list"
+          element={<GetAllList routeName="t-exams" lol="test-exams" />}
+        />
+        <Route
+          path="/test-exams"
+          element={
+            <InitialDataContextProvider>
+              {" "}
+              <TestExamsForm />{" "}
+            </InitialDataContextProvider>
+          }
+        />
+        <Route
+          path="/test-exams/edit/:id"
+          element={
+            <InitialDataContextProvider>
+              {" "}
+              <TestExamsFormEdit />{" "}
+            </InitialDataContextProvider>
+          }
+        />
         {/* t-exams */}
-
 
         {/* <Route
           path="/edit/:id"

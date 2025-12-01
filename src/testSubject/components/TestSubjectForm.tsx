@@ -1,12 +1,10 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Grid,
   Box,
   Typography,
-  ToggleButton,
-  ToggleButtonGroup,
   Button,
   FormControlLabel,
   Switch,
@@ -16,13 +14,11 @@ import {
   TestSchemaType,
 } from "../../validation/testSeriesSubjectSchema";
 import SimpleTextField from "../../GlobalComponent/SimpleTextField";
-import FileUpload from "../../GlobalComponent/FileUpload";
-import SimpleSelectField, {
-  Option,
-} from "../../GlobalComponent/SimpleSelectField";
+import SimpleSelectField from "../../GlobalComponent/SimpleSelectField";
 import useInitialDataContext from "../../addQeustion/_components/InitalContext";
-import { useParams } from "react-router-dom";
-import SimpleMultiAutoComplete from "../../GlobalComponent/SimpleMultiAutoComplete";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { toastResponse } from "../../util/toastResponse";
 
 export const slugify = (text: string): string => {
   return text
@@ -35,17 +31,12 @@ export const slugify = (text: string): string => {
     .replace(/^-+/, "")
     .replace(/-+$/, "");
 };
-
-
-const iconOptions: Option[] = [
-  { value: "math", label: "Math Icon" },
-  { value: "science", label: "Science Icon" },
-  { value: "geometry", label: "Geometry Icon" },
-];
-
 const TestSubjectForm = () => {
-  const getInitalData = useInitialDataContext();
-  const { id } = useParams();
+  const {
+    data: { tExamsData },
+  } = useInitialDataContext();
+  const { qid } = useParams();
+  const navigate = useNavigate()
   const {
     control,
     setValue,
@@ -59,8 +50,6 @@ const TestSubjectForm = () => {
       name: "",
       slug: null,
       order: 0,
-      test_series_exams: null,
-      //   icon: null,
       isActive: true,
     },
   });
@@ -73,11 +62,11 @@ const TestSubjectForm = () => {
   }, [nameValue, setValue]);
 
   useEffect(() => {
-    if (!id) return; // create mode
+    if (!qid) return; // create mode
 
     const fetchData = async () => {
       const url = `${import.meta.env.VITE_BASE_URL
-        }test-series-subjects/${id}?populate=*`;
+        }test-series-subjects/${qid}?populate=*`;
 
       const res = await fetch(url, {
         headers: {
@@ -86,58 +75,90 @@ const TestSubjectForm = () => {
       });
 
       const json = await res.json();
+      console.log("json: ", json);
       const item = json?.data?.attributes;
-
+      console.log("item: ", item);
       reset({
         name: item?.name ?? "",
         order: item?.order ?? 0,
         slug: item?.slug ?? null,
         isActive: item?.is_active ?? true,
         // is_active: item?.isActive ?? true,
-        test_series_exams: item?.test_series_exams?.data[0]?.id ?? 0,
       });
     };
 
     fetchData();
-  }, [id, reset]);
+  }, [qid, reset]);
   const isActive = watch("isActive");
 
   const onSubmit = async (data: TestSchemaType) => {
-    const isEdit = Boolean(id);
+    try {
+      const isEdit = Boolean(qid);
+      const url = isEdit
+        ? `${import.meta.env.VITE_BASE_URL}test-series-subjects/${qid}`
+        : `${import.meta.env.VITE_BASE_URL}test-series-subjects`;
+      // test-series-subjects
 
-    const url = isEdit
-      ? `${import.meta.env.VITE_BASE_URL}test-series-subjects/${id}`
-      : `${import.meta.env.VITE_BASE_URL}test-series-subjects`;
-    // test-series-subjects
-    const method = isEdit ? "PUT" : "POST";
+      const res = await fetch(url, {
+        method: isEdit ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_STRAPI_BEARER}`,
+        },
+        body: JSON.stringify({
+          data: data,
+        }),
+      });
 
-    const body = JSON.stringify({
-      data: data
-    });
-
-    const res = await fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${import.meta.env.VITE_STRAPI_BEARER}`,
-      },
-      body,
-    });
-
-    const json = await res.json();
+      const success = await toastResponse(
+        res,
+        `${qid ? "Updated" : "Created"} subject successfully`,
+        " subject is Failed"
+      );
+      const json = await res.json();
+      if (!success) return; // ❌ stop if failed
+      // 👉 Your next steps (optional)
+      if(!qid){ 
+        reset();
+        navigate("/test-subject-list");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong!");
+    }
   };
 
   return (
-    <Box p={4} borderRadius={2}>
-      <Typography variant="h6" mb={3}>
-        Create Test Series Category
+    <Box sx={{ marginBlockStart: 7, bgcolor: "background.paper", paddingInline: { xs: 2, sm: 3, md: 4 }, paddingBlock: 4 }}>
+      <Typography
+        variant="h5"
+        sx={{
+          mb: { xs: 2, md: 4 },
+          fontWeight: "bold",
+          pl: 2,
+          borderLeft: "6px solid",
+          borderColor: "primary.main",
+        }}
+      >
+        {qid ? "Edit Subject" : "Add Subject"}
       </Typography>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={3}>
           {/* NAME */}
           <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="subtitle1">Name</Typography>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+              Name
+              <Typography
+                variant="subtitle1"
+                component="span"
+                color="error"
+                fontWeight={700}
+                marginLeft={0.2}
+              >
+                *
+              </Typography>
+            </Typography>
             <SimpleTextField
               name="name"
               control={control}
@@ -147,14 +168,41 @@ const TestSubjectForm = () => {
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="subtitle1">Slug</Typography>
-            <SimpleTextField name="slug" disabled control={control} label="" fullWidth />
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+              Slug
+              <Typography
+                variant="subtitle1"
+                component="span"
+                color="error"
+                fontWeight={700}
+                marginLeft={0.2}
+              >
+                *
+              </Typography>
+            </Typography>
+            <SimpleTextField
+              name="slug"
+              disabled
+              control={control}
+              label=""
+              fullWidth
+              sx={{
+                cursor: "not-allowed",
+                "& .MuiInputBase-root": {
+                  cursor: "not-allowed",
+                },
+                "& .MuiInputBase-input": {
+                  cursor: "not-allowed",
+                },
+              }}
+            />
           </Grid>
 
           {/* ORDER */}
           <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="subtitle1">Order</Typography>
-
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+              Order
+            </Typography>
             <SimpleSelectField
               name="order"
               control={control}
@@ -163,57 +211,16 @@ const TestSubjectForm = () => {
                 { value: 0, label: "0" },
                 { label: "1", value: 1 },
               ]}
-              // isOptionEqualToValue={
-              //   watch("order") === 0
-              //     ? (a, b) => a.value === b.value
-              //     : (a, b) => a.value === b.value
-              // }
-              noneOption={false}
-              // placeholder="Add relation"
-              rules={{ required: "Select at least one subject" }}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="subtitle1">test Series Exams</Typography>
-            <SimpleSelectField
-              name="test_series_exams"
-              control={control}
-              label=""
-              // options={[
-              //   { value: 0, label: "0" },
-              //   { label: "1", value: 1 },
-              // ]}
-              options={
-                getInitalData.tExamsData?.map((exam) => ({
-                  value: exam.id,
-                  label: exam.attributes.title,
-                })) as Option[]
-              }
               noneOption={false}
               rules={{ required: "Select at least one subject" }}
             />
-            <SimpleMultiAutoComplete
-              name="test_series_exams"
-              control={control}
-              label=""
-              // options={[
-              //   { value: 0, label: "0" },
-              //   { label: "1", value: 1 },
-              // ]}
-              options={
-                getInitalData.tExamsData?.map((exam) => ({
-                  value: exam.id,
-                  label: exam.attributes.title,
-                })) as Option[]
-              }
-              // noneOption={false}
-              rules={{ required: "Select at least one subject" }}
-            />
-            
           </Grid>
 
           {/* isActive (toggle) */}
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid
+            size={{ xs: 12, md: 6 }}
+            sx={{ display: "flex", alignItems: "center" }}
+          >
             <FormControlLabel
               control={
                 <Switch
@@ -221,14 +228,45 @@ const TestSubjectForm = () => {
                   onChange={(e) => setValue("isActive", e.target.checked)}
                 />
               }
-              label="Is Active"
+              label={
+                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                  Is Active
+                  <Typography
+                    variant="subtitle1"
+                    component="span"
+                    color="error"
+                    fontWeight={700}
+                    ml={0.3}
+                  >
+                    *
+                  </Typography>
+                </Typography>
+              }
             />
           </Grid>
 
           {/* SUBMIT BUTTON */}
           <Grid size={{ xs: 12 }}>
-            <Button variant="contained" type="submit">
-              Submit
+            <Button
+              variant="contained"
+              type="submit"
+              sx={{
+                px: 5,
+                py: 1,
+                textTransform: "none",
+                fontWeight: 600,
+                fontSize: "18px",
+                borderRadius: "13px",
+                background: "linear-gradient(90deg, #4C6EF5, #15AABF)",
+                color: "#fff",
+                boxShadow: "0 4px 14px rgba(0,0,0,0.2)",
+                "&:hover": {
+                  background: "linear-gradient(90deg, #3B5BDB, #1098AD)",
+                  boxShadow: "0 6px 18px rgba(0,0,0,0.25)",
+                },
+              }}
+            >
+              {qid ? "Update" : "Submit"}
             </Button>
           </Grid>
         </Grid>

@@ -8,10 +8,6 @@ import {
   FormControlLabel,
   Switch,
 } from "@mui/material";
-import {
-  TestSchema,
-  TestSchemaType,
-} from "../../validation/testSeriesSubjectSchema";
 import SimpleTextField from "../../GlobalComponent/SimpleTextField";
 import SimpleSelectField, {
   Option,
@@ -20,10 +16,13 @@ import {
   TestExamSchema,
   TestSeriesExamType,
 } from "../../validation/testSeriesExamCategorySchema";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useInitialDataContext from "../../addQeustion/_components/InitalContext";
 import { useEffect } from "react";
 import { useSlugGenerator } from "../../hooks/useSlugGenerator";
+import { slugify } from "../../testSubject/components/TestSubjectForm";
+import { toastResponse } from "../../util/toastResponse";
+import { toast } from "react-toastify";
 
 const iconOptions: Option[] = [
   { value: "math", label: "Math Icon" },
@@ -32,6 +31,7 @@ const iconOptions: Option[] = [
 ];
 
 const TestExamCategoriesForm = () => {
+  const navigate = useNavigate();
   const {
     control,
     setValue,
@@ -46,13 +46,12 @@ const TestExamCategoriesForm = () => {
       slug: null,
       description: "",
       order: 0,
-      test_series_exams: null,
       is_active: false,
     },
   });
 
   const { id } = useParams(); // id or undefined
-  
+
   useSlugGenerator<TestSeriesExamType>({
     watch,
     setValue,
@@ -60,18 +59,17 @@ const TestExamCategoriesForm = () => {
     target: "slug",
   });
 
-  const location = useLocation();
 
-  const isActive = watch("is_active");
-  const { tExamsData } = useInitialDataContext();
+  const {
+    data: { tExamsData },
+  } = useInitialDataContext();
 
   useEffect(() => {
     if (!id) return; // CREATE mode
 
     const fetchItem = async () => {
-      const url = `${
-        import.meta.env.VITE_BASE_URL
-      }t-categories/${id}?populate=*`;
+      const url = `${import.meta.env.VITE_BASE_URL
+        }t-categories/${id}?fields[0]=name&fields[1]=slug&fields[2]=description&fields[3]=order&fields[4]=is_active&populate[test_series_exams]=true`;
 
       const res = await fetch(url, {
         headers: {
@@ -87,50 +85,88 @@ const TestExamCategoriesForm = () => {
         slug: item?.attributes?.slug,
         description: item?.attributes?.description,
         order: item?.attributes?.order,
-        test_series_exams:
-          item?.attributes?.test_series_exams?.data?.[0].id ?? null,
-        is_active: item?.attributes?.isActive,
+        is_active: item?.attributes?.is_active,
       });
     };
 
     fetchItem();
   }, [id, reset]);
 
-  const onSubmit = async (data: TestSchemaType) => {
+  const nameValue = watch("name");
+  useEffect(() => {
+    if (!nameValue) return;
+    setValue("slug", slugify(nameValue));
+  }, [nameValue, setValue]);
 
-    const isEdit = Boolean(id);
+  const onSubmit = async (data: any) => {
+    try {
+      const isEdit = Boolean(id);
+      const res = await fetch(
+        isEdit
+          ? `${import.meta.env.VITE_BASE_URL}t-categories/${id}`
+          : `${import.meta.env.VITE_BASE_URL}t-categories`,
+        {
+          method: isEdit ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_STRAPI_BEARER}`,
+          },
+          body: JSON.stringify({
+            data: data,
+          }),
+        }
+      );
+      const success = await toastResponse(
+        res,
+        id
+          ? "Updated Exam Category Successfully!"
+          : "Created Exam Category Successfully!",
+        id ? "Update Exam Category Failed!" : "Create Exam Category Failed!"
+      );
 
-    const url = isEdit
-      ? `${import.meta.env.VITE_BASE_URL}t-categories/${id}`
-      : `${import.meta.env.VITE_BASE_URL}t-categories`;
-    // test-series-subjects
-    const method = isEdit ? "PUT" : "POST";
-
-    const body = JSON.stringify({
-      data: data,
-    });
-
-    const res = await fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${import.meta.env.VITE_STRAPI_BEARER}`,
-      },
-      body,
-    });
+      if (!success) return; // ❌ stop if failed
+      // 👉 Your next steps (optional)
+      if(!id) { 
+        reset();
+        navigate("/test-exams-category-list");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong!");
+    }
   };
 
   return (
-    <Box p={4} borderRadius={2}>
-      <Typography variant="h6" mb={3}>
-        Create Test Series Category
+    <Box sx={{ marginBlockStart: 7, bgcolor: "background.paper", paddingInline: { xs: 2, sm: 3, md: 4 }, paddingBlock: 4 }}>
+      <Typography
+        variant="h5"
+        sx={{
+          mb: { xs: 2, md: 4 },
+          fontWeight: "bold",
+          pl: 2,
+          borderLeft: "6px solid",
+          borderColor: "primary.main",
+        }}
+      >
+        {id ? "Edit Exam Category" : "Add Exam Category"}
       </Typography>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container spacing={3}>
+      <Box component={"form"} onSubmit={handleSubmit(onSubmit)}>
+        <Grid container spacing={2}>
           {/* NAME */}
           <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="subtitle1">Name</Typography>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+              Name
+              <Typography
+                variant="subtitle1"
+                component="span"
+                color="error"
+                fontWeight={700}
+                marginLeft={0.2}
+              >
+                *
+              </Typography>
+            </Typography>
             <SimpleTextField
               name="name"
               control={control}
@@ -140,9 +176,42 @@ const TestExamCategoriesForm = () => {
             />
           </Grid>
 
-          {/* ORDER */}
           <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="subtitle1">Order</Typography>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+              Slug
+              <Typography
+                variant="subtitle1"
+                component="span"
+                color="error"
+                fontWeight={700}
+                marginLeft={0.2}
+              >
+                *
+              </Typography>
+            </Typography>
+            <SimpleTextField
+              name="slug"
+              disabled
+              control={control}
+              label=""
+              fullWidth
+              sx={{
+                cursor: "not-allowed",
+                "& .MuiInputBase-root": {
+                  cursor: "not-allowed",
+                },
+                "& .MuiInputBase-input": {
+                  cursor: "not-allowed",
+                },
+              }}
+            />
+          </Grid>
+
+          {/* ORDER */}
+          <Grid size={{ xs: 12, md: 6 }} sx={{ height: "fit-content" }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+              Order
+            </Typography>
             <SimpleSelectField
               name="order"
               control={control}
@@ -151,18 +220,14 @@ const TestExamCategoriesForm = () => {
                 { value: 0, label: "0" },
                 { label: "1", value: 1 },
               ]}
-              // isOptionEqualToValue={
-              //   watch("order") === 0
-              //     ? (a, b) => a.value === b.value
-              //     : (a, b) => a.value === b.value
-              // }
               noneOption={false}
-              // placeholder="Add relation"
               rules={{ required: "Select at least one subject" }}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="subtitle1">Description</Typography>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+              Description
+            </Typography>
             <SimpleTextField
               name="description"
               control={control}
@@ -170,30 +235,16 @@ const TestExamCategoriesForm = () => {
               rules={{ required: "Description is required" }}
               fullWidth
               multiline
-              rows={3}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="subtitle1">Test Series Exams</Typography>
-            <SimpleSelectField
-              name="test_series_exams"
-              control={control}
-              label=""
-              options={tExamsData?.map((exam) => ({
-                label: exam.attributes.title,
-                value: exam.id,
-              }))}
-              noneOption={false}
-              rules={{ required: "Select at least one subject" }}
+              rows={2}
             />
           </Grid>
 
           {/* isActive (toggle) */}
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }} display="flex" alignItems="center">
             <FormControlLabel
               control={
                 <Switch
-                  checked={isActive}
+                  checked={watch("is_active")}
                   onChange={(e) => setValue("is_active", e.target.checked)}
                 />
               }
@@ -203,12 +254,31 @@ const TestExamCategoriesForm = () => {
 
           {/* SUBMIT BUTTON */}
           <Grid size={{ xs: 12 }}>
-            <Button variant="contained" type="submit">
-              Submit
+            <Button
+              variant="contained"
+              type="submit"
+              sx={{
+                px: 5,
+                py: 1,
+                textTransform: "none",
+                fontWeight: 600,
+                fontSize: "18px",
+                borderRadius: "13px",
+                background: "linear-gradient(90deg, #4C6EF5, #15AABF)",
+                color: "#fff",
+                boxShadow: "0 4px 14px rgba(0,0,0,0.2)",
+                "&:hover": {
+                  background: "linear-gradient(90deg, #3B5BDB, #1098AD)",
+                  boxShadow: "0 6px 18px rgba(0,0,0,0.25)",
+                },
+              }}
+            >
+              {id ? "Update" : "Submit"}
             </Button>
           </Grid>
         </Grid>
-      </form>
+        <Grid>{/* <TopicsPage /> */}</Grid>
+      </Box>
     </Box>
   );
 };
