@@ -25,6 +25,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import MainEditor from "../components/MainEditor";
 import OptionsFieldArray from "../components/OptionsFieldArray";
 import { useEffect } from "react";
+import { tr } from "zod/v4/locales";
 
 export default function FormStructure() {
   const { qid } = useParams();
@@ -35,12 +36,12 @@ export default function FormStructure() {
     setValue,
     handleSubmit,
     reset,
+    trigger,
     formState: { errors },
   } = useForm({
     defaultValues: {
       subject_tag: [],
       test_series_topic: [],
-      // test_series_exams: [],
       difficulty: "easy",
       hint: "",
       option_type: "single_select",
@@ -49,12 +50,11 @@ export default function FormStructure() {
         { option_label: "A", option: "", is_correct: false },
         { option_label: "B", option: "", is_correct: false },
         { option_label: "C", option: "", is_correct: false },
-        { option_label: "B", option: "", is_correct: false },
+        { option_label: "D", option: "", is_correct: false },
       ],
       question_title: "",
     },
     resolver: zodResolver(QuestionSchema),
-    // resolver: zodResolver(QuestionSchema),
   });
   console.log("watch: ", watch());
   console.log("errors: ", errors);
@@ -64,9 +64,8 @@ export default function FormStructure() {
     const fetchQuestionById = async (
       qid: number
     ): Promise<QuestionSchemaType> => {
-      const url = `${
-        import.meta.env.VITE_BASE_URL
-      }t-questions/${qid}?populate[subject_tag]=true&populate[test_series_topic]=true&populate[options]=true&populate[test_series_exams]=true`;
+      const url = `${import.meta.env.VITE_BASE_URL
+        }t-questions/${qid}?populate[subject_tag]=true&populate[test_series_topic]=true&populate[options]=true&populate[test_series_exams]=true`;
 
       const res = await fetch(url, {
         headers: {
@@ -93,21 +92,21 @@ export default function FormStructure() {
         /** SUBJECT TAG → single object in API, array in schema */
         subject_tag: attr.subject_tag?.data
           ? [
-              {
-                id: attr.subject_tag.data.id,
-                name: attr.subject_tag.data.attributes.name,
-              },
-            ]
+            {
+              id: attr.subject_tag.data.id,
+              name: attr.subject_tag.data.attributes.name,
+            },
+          ]
           : [],
 
         /** TOPIC → Strapi returns single, schema requires an array */
         test_series_topic: attr.test_series_topic?.data
           ? [
-              {
-                id: attr.test_series_topic.data.id,
-                name: attr.test_series_topic.data.attributes.name,
-              },
-            ]
+            {
+              id: attr.test_series_topic.data.id,
+              name: attr.test_series_topic.data.attributes.name,
+            },
+          ]
           : [],
 
         /** TEST SERIES EXAMS → many-to-many array */
@@ -198,6 +197,7 @@ export default function FormStructure() {
             {qid ? "Edit Question Form " : "Add Question Form "}
           </Typography>
         </Grid>
+
         <Grid size={{ xs: 12, md: 6, lg: 4 }}>
           <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
             Select subject
@@ -360,6 +360,8 @@ export default function FormStructure() {
             control={control}
             setValue={setValue}
             watch={watch}
+            errors={errors}
+            trigger={trigger}
           />
         </Grid>
         <Grid size={12}>

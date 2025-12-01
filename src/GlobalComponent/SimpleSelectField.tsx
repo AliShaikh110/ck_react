@@ -88,7 +88,7 @@ const SimpleSelectField = <T extends FieldValues>({
             },
             "& .MuiSelect-select": {
               padding: "10px 12px",
-              fontSize: "0.9rem",
+              // fontSize: "0.9rem",
               fontWeight: 500,
               color: "rgba(0,0,0,0.7) !important", // always soft grey
             },
@@ -124,7 +124,7 @@ const SimpleSelectField = <T extends FieldValues>({
             },
           }}
         >
-          <InputLabel>{label}</InputLabel>
+          <InputLabel size="small">{label}</InputLabel>
           <Select
             {...field}
             label={label}
@@ -134,8 +134,8 @@ const SimpleSelectField = <T extends FieldValues>({
                 ? field.value
                   ? field.value
                   : noneOption
-                  ? ""
-                  : 0
+                    ? ""
+                    : 0
                 : field.value
             }
             slotProps={{

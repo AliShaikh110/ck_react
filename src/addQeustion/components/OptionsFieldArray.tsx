@@ -1,10 +1,11 @@
-import React from "react";
 import {
   useFieldArray,
   Control,
   UseFormWatch,
   UseFormSetValue,
   FieldValues,
+  FieldErrors,
+  UseFormTrigger,
 } from "react-hook-form";
 import {
   Box,
@@ -15,22 +16,28 @@ import {
   Stack,
   IconButton,
   Typography,
+  FormHelperText,
 } from "@mui/material";
 import MainEditor from "./MainEditor";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SimpleSelectField from "../../GlobalComponent/SimpleSelectField";
 import { optionLabel } from "../_components/data";
+import { QuestionSchemaType } from "../QuestionSchema";
 
 interface OptionFieldArrayProps<T extends FieldValues> {
   control: Control<T>;
   setValue: UseFormSetValue<T>;
   watch: UseFormWatch<T>;
+  errors: any;
+  trigger: UseFormTrigger<QuestionSchemaType>
 }
 
 const OptionsFieldArray = <T extends FieldValues>({
   control,
   setValue,
   watch,
+  errors,
+  trigger,
 }: OptionFieldArrayProps<T>) => {
   // Use any for the field array name to avoid deep generic complexity
   const { fields, append, remove } = useFieldArray({
@@ -41,31 +48,39 @@ const OptionsFieldArray = <T extends FieldValues>({
   const handleAddOption = () => {
     // cast to any to satisfy RHF typing
     append({ option_label: "", option: "", is_correct: false } as any);
+    trigger('options');
   };
 
   return (
     <Box>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-          Options
-          <Typography
-            variant="subtitle1"
-            component="span"
-            color="error"
-            fontWeight={700}
-            marginLeft={0.2}
-          >
-            *
+      <Box sx={{ marginBlockEnd: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+            Options
+            <Typography
+              variant="subtitle1"
+              component="span"
+              color="error"
+              fontWeight={700}
+              marginLeft={0.2}
+            >
+              *
+            </Typography>
           </Typography>
-        </Typography>
-        <Button variant="outlined" size="small" onClick={handleAddOption}>
-          + Add Option
-        </Button>
+          <Button variant="outlined" size="small" onClick={handleAddOption}>
+            + Add Option
+          </Button>
+        </Box>
+        {errors?.options?.root?.message && (
+          <FormHelperText error={errors.options.root.message}>
+            {errors.options.root.message}
+          </FormHelperText>
+        )}
       </Box>
 
       <Grid container spacing={3}>
@@ -95,7 +110,10 @@ const OptionsFieldArray = <T extends FieldValues>({
             >
               {/* <Box fontWeight={600}>Option {index + 1}</Box> */}
               <Typography variant="subtitle1">Options {index + 1}</Typography>
-              <IconButton size="small" onClick={() => remove(index)}>
+              <IconButton size="small" onClick={() => {
+                remove(index);
+                trigger('options')
+              }}>
                 <DeleteIcon />
               </IconButton>
             </Stack>
@@ -122,12 +140,21 @@ const OptionsFieldArray = <T extends FieldValues>({
                   <Checkbox
                     // watch returns unknown; coerce to boolean
                     checked={!!watch(`options.${index}.is_correct` as any)}
-                    onChange={(e) =>
+                    onChange={(e) => {
+
                       // cast value param to any to satisfy setValue typing
                       setValue(
                         `options.${index}.is_correct` as any,
-                        e.target.checked as any
+                        e.target.checked as any,
+                        {
+                          shouldValidate: false,
+                          shouldDirty: true,
+                          shouldTouch: true,
+                        }
                       )
+                      trigger('options');
+
+                    }
                     }
                   />
                 }

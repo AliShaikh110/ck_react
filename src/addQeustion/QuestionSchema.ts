@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ZodIssueCode } from "zod/v3";
 
 export const QuestionSchema = z.object({
   // question_title: z.string().min(1, "Question title is required"),
@@ -23,12 +24,25 @@ export const QuestionSchema = z.object({
         option: z.string().min(1, "Option text is required"),
         is_correct: z.boolean(),
       })
-    )
-    .min(1, "At least two options are required")
-    .refine(
-      (opts) => opts.some((o) => o.is_correct === true),
-      "At least one option must be marked correct"
     ),
   question_title: z.string().min(1, "Question content is required"),
+}).superRefine((fieldName, ctx) => {
+  const options = fieldName.options;
+  if (options.length < 3) {
+    ctx.addIssue({
+      code: ZodIssueCode.custom,
+      message: "Please add at least 3 options.",
+      path: ["options"],
+    });
+  }
+
+  const hasCorrect = options.some((o) => o.is_correct === true);
+  if (!hasCorrect) {
+    ctx.addIssue({
+      code: ZodIssueCode.custom,
+      message: "Please mark at least one option as correct.",
+      path: ["options"],
+    });
+  }
 });
 export type QuestionSchemaType = z.infer<typeof QuestionSchema>;
