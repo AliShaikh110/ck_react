@@ -65,9 +65,8 @@ const TestSubjectForm = () => {
     if (!qid) return; // create mode
 
     const fetchData = async () => {
-      const url = `${
-        import.meta.env.VITE_BASE_URL
-      }test-series-subjects/${qid}?populate=*`;
+      const url = `${import.meta.env.VITE_BASE_URL
+        }test-series-subjects/${qid}?populate=*`;
 
       const res = await fetch(url, {
         headers: {
@@ -130,19 +129,18 @@ const TestSubjectForm = () => {
   };
 
   return (
-    <Box p={4} borderRadius={2} sx={{ marginBlockStart: 6 }}>
+    <Box sx={{ marginBlockStart: 7, bgcolor: "background.paper", paddingInline: { xs: 2, sm: 3, md: 4 }, paddingBlock: 4 }}>
       <Typography
         variant="h5"
-        mb={3}
         sx={{
-          mb: 2,
+          mb: { xs: 2, md: 4 },
           fontWeight: "bold",
           pl: 2,
           borderLeft: "6px solid",
           borderColor: "primary.main",
         }}
       >
-        {qid ? "Update Subject" : "Create Subject"}
+        {qid ? "Edit Subject" : "Add Subject"}
       </Typography>
 
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -204,15 +202,6 @@ const TestSubjectForm = () => {
           <Grid size={{ xs: 12, md: 6 }}>
             <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
               Order
-              <Typography
-                variant="subtitle1"
-                component="span"
-                color="error"
-                fontWeight={700}
-                marginLeft={0.2}
-              >
-                *
-              </Typography>
             </Typography>
             <SimpleSelectField
               name="order"

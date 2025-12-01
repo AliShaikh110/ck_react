@@ -60,8 +60,7 @@ const TestSeriesForm = () => {
 
     const fetchData = async () => {
       const res = await fetch(
-        `${
-          import.meta.env.VITE_BASE_URL
+        `${import.meta.env.VITE_BASE_URL
         }t-topics/${qid}?[fields][0]=name&[fields][1]=slug&[fields][2]=is_active&[fields][3]=order&populate[test_series_subject][fields]=qid`,
         {
           headers: {
@@ -131,24 +130,18 @@ const TestSeriesForm = () => {
   console.log("watch", watch());
 
   return (
-    <Box
-      p={4}
-      sx={{ marginBlockStart: 6 }}
-      component="form"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+    <Box sx={{ marginBlockStart: 7, bgcolor: "background.paper", paddingInline: { xs: 2, sm: 3, md: 4 }, paddingBlock: 4 }}>
       <Typography
         variant="h5"
-        mb={3}
         sx={{
-          mb: 2,
+          mb: { xs: 2, md: 4 },
           fontWeight: "bold",
           pl: 2,
           borderLeft: "6px solid",
           borderColor: "primary.main",
         }}
       >
-        {qid ? "Update Topic" : "Add Topic"}
+        {qid ? "Edit Topic" : "Add Topic"}
       </Typography>
 
       <Grid container spacing={3}>
@@ -242,15 +235,6 @@ const TestSeriesForm = () => {
         <Grid size={{ xs: 12, md: 6 }}>
           <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
             Order
-            <Typography
-              variant="subtitle1"
-              component="span"
-              color="error"
-              fontWeight={700}
-              marginLeft={0.2}
-            >
-              *
-            </Typography>
           </Typography>
           <SimpleSelectField
             name="order"
