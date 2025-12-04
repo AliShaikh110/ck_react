@@ -33,7 +33,11 @@ function App() {
         <Route
           path="/test-exams-category-list"
           element={
-            <GetAllList routeName="t-categories" lol="test-exams-category" />
+            <GetAllList
+              key="/test-exams-category-list"
+              routeName="t-categories"
+              lol="test-exams-category"
+            />
           }
         />
         <Route
@@ -57,7 +61,13 @@ function App() {
         {/* t-questions */}
         <Route
           path="/questions-list"
-          element={<GetAllList routeName="t-questions" lol="questions" />}
+          element={
+            <GetAllList
+              key="/questions-list"
+              routeName="t-questions"
+              lol="questions"
+            />
+          }
         />
         <Route
           path="/questions"
@@ -82,7 +92,11 @@ function App() {
         <Route
           path="/test-subject-list"
           element={
-            <GetAllList routeName="test-series-subjects" lol="test-subject" />
+            <GetAllList
+              key="/test-subject-list"
+              routeName="test-series-subjects"
+              lol="test-subject"
+            />
           }
         />
         <Route
@@ -106,7 +120,13 @@ function App() {
         {/* t-topic */}
         <Route
           path="/test-topic-list"
-          element={<GetAllList routeName="t-topics" lol="test-topic" />}
+          element={
+            <GetAllList
+              key="/test-topic-list"
+              routeName="t-topics"
+              lol="test-topic"
+            />
+          }
         />
         <Route
           path="/test-topic"
@@ -131,7 +151,13 @@ function App() {
         {/* t-exams */}
         <Route
           path="/exams-list"
-          element={<GetAllList routeName="t-exams" lol="test-exams" />}
+          element={
+            <GetAllList
+              key="/exams-list"
+              routeName="t-exams"
+              lol="test-exams"
+            />
+          }
         />
         <Route
           path="/test-exams"

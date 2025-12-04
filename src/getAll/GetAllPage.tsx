@@ -74,6 +74,7 @@ export default function GetAllList({ routeName, lol, title }: Props) {
     pageCount: 1,
     total: 0,
   });
+  console.log("pageState: ", pageState);
 
   const [searchQuery, setSearchQuery] = useState("");
   const searchTimer = useRef<number | null>(null);
@@ -83,8 +84,7 @@ export default function GetAllList({ routeName, lol, title }: Props) {
     if (searchQuery.trim().length > 0) return;
 
     async function load() {
-      const res = await fetchQuestions(routeName, 1);
-      console.log("res: ", res);
+      const res = await fetchQuestions(routeName, pageState.page);
 
       setList(res?.data || []);
       setPageState({
@@ -97,7 +97,7 @@ export default function GetAllList({ routeName, lol, title }: Props) {
     }
 
     load();
-  }, []);
+  }, [routeName, pageState.page, searchQuery]);
 
   // Handle Meili search
   const handleSearch = (value: string) => {
@@ -254,6 +254,7 @@ export default function GetAllList({ routeName, lol, title }: Props) {
                     px: { xs: 2, md: 2.5 },
                     display: "flex",
                     alignItems: "center",
+                    flexDirection: "column",
                     justifyContent: "space-between",
                     gap: 2,
                     borderBottom:
@@ -273,78 +274,97 @@ export default function GetAllList({ routeName, lol, title }: Props) {
                       display: "flex",
                       gap: 2,
                       flex: 1,
+                      flexDirection: "column",
                       minWidth: 0,
                       alignItems: "flex-start",
+                      width: "100%",
                     }}
                   >
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        fontWeight: 700,
+                        overflow: "hidden",
+                        whiteSpace: "normal",
+                        display: "block",
+                        lineHeight: 1.4,
+                        fontSize: { xs: "0.9rem", md: "1rem" },
+                      }}
+                    >
+                      <HtmlWithMathRenderer
+                        html={
+                          item?.attributes?.question_title ||
+                          item?.attributes?.name ||
+                          item?.attributes?.title ||
+                          item?.attributes?.slug ||
+                          ""
+                        }
+                      />
+                    </Typography>
                     {/* Question */}
-                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                      <Typography
-                        variant="subtitle1"
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        width: "100%",
+                      }}
+                    >
+                      <Box
                         sx={{
-                          fontWeight: 700,
-                          overflow: "hidden",
-                          whiteSpace: "normal",
-                          display: "block",
-                          lineHeight: 1.4,
-                          fontSize: { xs: "0.9rem", md: "1rem" },
+                          flex: 1,
+                          minWidth: 0,
+                          display: "flex",
+                          justifyContent: "space-between",
                         }}
                       >
-                        <HtmlWithMathRenderer
-                          html={item?.attributes?.question_title || ""}
-                        />
-                      </Typography>
-
-                      <Typography
-                        variant="subtitle1"
-                        color="text.secondary"
-                        // sx={{ fontSize: { xs: "0.65rem", md: "0.75rem" } }}
+                        <Typography
+                          variant="subtitle1"
+                          color="text.secondary"
+                          // sx={{ fontSize: { xs: "0.65rem", md: "0.75rem" } }}
+                        >
+                          ID: {item.id}
+                        </Typography>
+                      </Box>
+                      {/* RIGHT SIDE: View Details Button */}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: { xs: 0, md: 0.5 },
+                          color: "primary.main",
+                          fontWeight: 600,
+                          cursor: "pointer",
+                          flexShrink: 0,
+                          transition: "0.25s ease",
+                          "&:hover": {
+                            gap: { xs: 0, md: 1 },
+                            color: "primary.dark",
+                          },
+                        }}
                       >
-                        ID: {item.id}
-                      </Typography>
-                    </Box>
-                  </Box>
+                        {/* Text hidden on XS/SM, visible from MD */}
+                        <Typography
+                          variant="subtitle2"
+                          sx={{ fontWeight: 400 }}
+                        >
+                          View details
+                        </Typography>
 
-                  {/* RIGHT SIDE: View Details Button */}
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: { xs: 0, md: 0.5 },
-                      color: "primary.main",
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      flexShrink: 0,
-                      transition: "0.25s ease",
-                      "&:hover": {
-                        gap: { xs: 0, md: 1 },
-                        color: "primary.dark",
-                      },
-                    }}
-                  >
-                    {/* Text hidden on XS/SM, visible from MD */}
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        display: { xs: "none", sm: "none", md: "block" },
-                        fontSize: "0.75rem",
-                      }}
-                    >
-                      View details
-                    </Typography>
-
-                    {/* Arrow always visible */}
-                    <Box
-                      component="span"
-                      sx={{
-                        fontSize: { xs: "1rem", md: "1.1rem" },
-                        transition: "0.25s ease",
-                        ".MuiListItemButton-root:hover &": {
-                          transform: "translateX(3px)",
-                        },
-                      }}
-                    >
-                      →
+                        {/* Arrow always visible */}
+                        <Box
+                          component="span"
+                          sx={{
+                            fontSize: { xs: "1rem", md: "1.1rem" },
+                            transition: "0.25s ease",
+                            ".MuiListItemButton-root:hover &": {
+                              transform: "translateX(3px)",
+                            },
+                          }}
+                        >
+                          →
+                        </Box>
+                      </Box>
                     </Box>
                   </Box>
                 </ListItemButton>
