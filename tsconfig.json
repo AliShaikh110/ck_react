@@ -18,7 +18,9 @@
     "skipLibCheck": true,
     "importsNotUsedAsValues": "remove",
     "verbatimModuleSyntax": false,
-    "preserveValueImports": false
+    "preserveValueImports": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
 
   "include": ["src"], // ✅ This must be OUTSIDE compilerOptions
